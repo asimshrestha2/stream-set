@@ -1,0 +1,35 @@
+html
+    head
+        title Settings
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(href="https://fonts.googleapis.com/css?family=Montserrat:300,400", rel="stylesheet")
+        link(rel="stylesheet", href="/static/css/main.css")
+    body
+        header Settings
+        .content
+            .card
+                .text
+                    div Filepath
+                    input#filepath(type="text", name="filepath")
+                .buttons
+                    .button Set
+                        a#set-filepath(href="#")
+                            .btnfill
+        .content
+            .card
+                .text
+                    div Customization
+                    .input.color
+                        .label Color
+                        input#color-settings(type="text")
+                    .input
+                        .label Time(ms)
+                        input#time-settings(type="text")
+                    .input
+                        .label Logo Path
+                        input#logopath(type="text")
+                .buttons
+                    .button Set
+                        a#save-customization(href="#")
+                            .btnfill
+        script(src="/static/js/settings.js")
