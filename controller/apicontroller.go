@@ -23,21 +23,15 @@ func APIIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		Err:  false,
 		Data: "Hi",
 	}
-
 	uj, _ := json.Marshal(u)
-
 	fmt.Fprintf(w, "%s", uj)
 }
 
 func APIGetFilePath(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	// reg := regexp.MustCompile(`\\`)
-	// ret := reg.ReplaceAllString(sf.FileLocation, "\\\\")
 	retj, _ := json.Marshal(sf)
 	fmt.Fprintf(w, "%s", retj)
 }
-
-//data: "circlecolor=" + color_input.value + "&timersetting=" + time_input.value + "&logopath=" + logopath_input.value,
 
 func APISettings(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")

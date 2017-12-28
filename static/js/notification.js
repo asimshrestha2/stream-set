@@ -28,10 +28,10 @@ function start(){
   idrunning = true;
 }
 
+var totalTime = 60000;
 function frame() {
   var currentTime = Date.now();
   var timeDiff = currentTime - lastTime;
-  var totalTime = 60000;
   
   if(!logo.classList.contains("animate-fast")){
     logo.classList.remove("animate-normal");

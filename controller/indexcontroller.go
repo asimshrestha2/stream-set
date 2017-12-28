@@ -13,10 +13,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-var (
-// homeTempl = template.Must(template.New("").Parse(homeHTML))
-)
-
 // Index for Website
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -33,15 +29,20 @@ func Notification(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		lastMod = time.Unix(0, 0)
 	}
 	var v = struct {
-		Host    string
-		Data    string
-		LastMod string
+		Host         string
+		Data         string
+		LastMod      string
+		CircleColor  string
+		TimerSetting int64
+		LogoPath     string
 	}{
 		r.Host,
 		string(p),
 		strconv.FormatInt(lastMod.UnixNano(), 16),
+		sf.CircleColor,
+		sf.TimerSetting,
+		sf.LogoPath,
 	}
-
 	notificationTemp.Execute(w, &v)
 }
 
@@ -60,4 +61,10 @@ func Settings(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		}
 		fmt.Fprintf(w, t)
 	}
+}
+
+//FileImage: to convert image location threw server
+func FileImage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	filepath := r.FormValue("path")
+	http.ServeFile(w, r, filepath)
 }

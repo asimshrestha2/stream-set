@@ -29,6 +29,7 @@ func main() {
 	r.GET("/api/getfilepath", controller.APIGetFilePath)
 	r.POST("/api/setsettings", controller.APISettings)
 
+	r.GET("/fileimage", controller.FileImage)
 	// r.GET("/hello/:name", Hello)
 	r.GET("/ws", controller.WSHandler)
 	r.ServeFiles("/static/*filepath", http.Dir(dir))
