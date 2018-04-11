@@ -1,55 +1,56 @@
 package main
 
 import (
-	"flag"
 	"log"
-	"net/http"
 
-	"github.com/urfave/negroni"
-
-	"github.com/asimshrestha2/stream-set/controller"
-	"github.com/julienschmidt/httprouter"
+	"github.com/asimshrestha2/stream-set/gamewindows"
+	"github.com/asimshrestha2/stream-set/guicontroller"
+	"github.com/asimshrestha2/stream-set/server"
+	"github.com/asimshrestha2/stream-set/twitch"
+	"github.com/lxn/walk"
+	. "github.com/lxn/walk/declarative"
+	"github.com/pkg/browser"
 )
 
-// func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-//     fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
-// }
-
 func main() {
-	var dir string
-	flag.StringVar(&dir, "dir", "./static/", "the directory to serve files from. Defaults to the static folder")
-	controller.GetDataFromFile()
-	flag.Parse()
+	walk.Resources.SetRootDirPath("./img")
 
-	r := httprouter.New()
-	r.GET("/", controller.Index)
-	r.GET("/notification/", controller.Notification)
-	r.GET("/settings/", controller.Settings)
-	r.GET("/api/", controller.APIIndex)
-	r.GET("/api/getfilepath", controller.APIGetFilePath)
-	r.POST("/api/setsettings", controller.APISettings)
+	go server.StartServer()
+	go gamewindows.GetWindows()
 
-	r.GET("/fileimage", controller.FileImage)
-	// r.GET("/hello/:name", Hello)
-	r.GET("/ws", controller.WSHandler)
-	r.ServeFiles("/static/*filepath", http.Dir(dir))
-
-	// n := negroni.Classic() // Includes some default middlewares
-	// n.UseHandler(r)
-
-	n := negroni.New()
-	n.Use(negroni.HandlerFunc(SetXPoweredBy))
-	n.UseHandler(r)
-
-	srv := &http.Server{
-		Handler: r,
-		Addr:    ":8000",
+	if _, err := (MainWindow{
+		AssignTo: &guicontroller.MW.MainWindow,
+		Title:    "Stream Set",
+		MinSize:  Size{320, 240},
+		Size:     Size{400, 300},
+		Layout:   VBox{MarginsZero: true},
+		Children: []Widget{
+			HSplitter{
+				MaxSize: Size{400, 128},
+				Children: []Widget{
+					ImageView{
+						AssignTo: &guicontroller.MW.TwitchImage,
+						Image:    "Asim_Ymir.png",
+						Margin:   10,
+						Mode:     ImageViewModeShrink,
+					},
+					Label{
+						AssignTo: &guicontroller.MW.TwitchUsername,
+						Text:     "<username>",
+					},
+				},
+			},
+			LinkLabel{
+				AssignTo: &guicontroller.MW.LL,
+				Text:     `<a id="twitch_token" href="` + twitch.RequestTokenURL + `">Twitch Login</a>`,
+				OnLinkActivated: func(link *walk.LinkLabelLink) {
+					guicontroller.MW.LL.SetText("Loading...")
+					log.Printf("id: '%s', url: '%s'\n", link.Id(), link.URL())
+					browser.OpenURL(link.URL())
+				},
+			},
+		},
+	}.Run()); err != nil {
+		log.Fatal(err)
 	}
-	log.Fatal(srv.ListenAndServe())
-}
-
-func SetXPoweredBy(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	rw.Header().Set("x-powered-by", "Potato")
-	next(rw, r)
-	// do some stuff after
 }
