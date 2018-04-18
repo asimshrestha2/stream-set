@@ -2,15 +2,26 @@ language: go
 
 go:
   - "1.8.x"
+  - "1.9.x"
   - master
+
+install: true
+
+before_script:
+  - BINARY=stream-set
+  - VERSION=v0.0.1
+  - GOARCH=amd64
+  - GOOS=windows
+  - go get github.com/golang/lint/golint                        # Linter
+  - go get github.com/lxn/walk  
+  - go get github.com/akavel/rsrc
+  - go get github.com/urfave/negroni
+  - go get github.com/julienschmidt/httprouter
+  - go get github.com/mitchellh/go-ps
 
 go_import_path:
   - github.com/akavel/rsrc
-  - github.com/lxn/walk
-  - github.com/urfave/negroni
-  - github.com/julienschmidt/httprouter
-  - github.com/mitchellh/go-ps
 
 script: 
   - rsrc -manifest main.manifest -o release/rsrc.syso
-  - go build -o release/%BINARY%-%VERSION%-windows-amd64.exe
+  - go build -ldflags="-H windowsgui" -o release/%BINARY%-%VERSION%-windows-amd64.exe
