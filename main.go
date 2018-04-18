@@ -23,6 +23,7 @@ func main() {
 		Title:    "Stream Set",
 		MinSize:  Size{320, 240},
 		Size:     Size{400, 300},
+		MaxSize:  Size{450, 350},
 		Layout:   VBox{MarginsZero: true},
 		Children: []Widget{
 			HSplitter{
@@ -57,6 +58,13 @@ func main() {
 					// log.Printf("id: '%s', url: '%s'\n", link.Id(), link.URL())
 					browser.OpenURL(link.URL())
 				},
+			},
+		},
+		StatusBarItems: []StatusBarItem{
+			StatusBarItem{
+				AssignTo:    &guicontroller.MW.CurrentWindow,
+				Text:        "Current Window: <window>",
+				ToolTipText: "Current Active Window",
 			},
 		},
 	}.Run()); err != nil {

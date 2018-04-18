@@ -8,6 +8,7 @@ type MyMainWindow struct {
 	TwitchUsername *walk.Label
 	TwitchGame     *walk.Label
 	TwitchImage    *walk.ImageView
+	CurrentWindow  *walk.StatusBarItem
 }
 
 var MW = &MyMainWindow{}

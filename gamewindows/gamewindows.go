@@ -7,6 +7,8 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/asimshrestha2/stream-set/guicontroller"
+
 	"github.com/asimshrestha2/stream-set/twitch"
 	ps "github.com/mitchellh/go-ps"
 )
@@ -97,6 +99,7 @@ func GetWindows() {
 					currentPID := GetWindowThreadProcessID(HWND(hwnd))
 					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " Game in List: ", gameInList)
 					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
+					guicontroller.MW.CurrentWindow.SetText("Current Window: " + trimedText)
 					if twitch.Token != "" && !doesProccessExist(currentGame.pid) && currentGame.name != trimedText && currentGame.pid != currentPID && gameInList {
 						currentGame.name = trimedText
 						currentGame.hwnd = hwnd
