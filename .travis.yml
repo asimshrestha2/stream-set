@@ -5,23 +5,24 @@ go:
   - "1.9.x"
   - master
 
-install: true
+install: 
+  - go get github.com/golang/lint/golint                        # Linter
+  - go get github.com/akavel/rsrc
+  - go get github.com/lxn/walk  
+  - go get github.com/urfave/negroni
+  - go get github.com/julienschmidt/httprouter
+  - go get github.com/mitchellh/go-ps
 
 before_script:
   - set BINARY=stream-set
   - set VERSION=v0.0.1
   - set GOARCH=amd64
   - set GOOS=windows
-  - go get github.com/golang/lint/golint                        # Linter
-  - go get github.com/akavel/rsrc
 
 go_import_path:
   - github.com/akavel/rsrc
+  - github.com/lxn/walk
 
 script: 
-  - go get github.com/lxn/walk  
-  - go get github.com/urfave/negroni
-  - go get github.com/julienschmidt/httprouter
-  - go get github.com/mitchellh/go-ps
   - rsrc -manifest main.manifest -o release/rsrc.syso
   - go build -ldflags="-H windowsgui" -o release/%BINARY%-%VERSION%-windows-amd64.exe
