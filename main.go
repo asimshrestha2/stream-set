@@ -26,7 +26,8 @@ func main() {
 		Layout:   VBox{MarginsZero: true},
 		Children: []Widget{
 			HSplitter{
-				MaxSize: Size{400, 128},
+				MaxSize:     Size{400, 128},
+				HandleWidth: 0,
 				Children: []Widget{
 					ImageView{
 						AssignTo: &guicontroller.MW.TwitchImage,
@@ -34,9 +35,17 @@ func main() {
 						Margin:   10,
 						Mode:     ImageViewModeShrink,
 					},
-					Label{
-						AssignTo: &guicontroller.MW.TwitchUsername,
-						Text:     "<username>",
+					VSplitter{
+						Children: []Widget{
+							Label{
+								AssignTo: &guicontroller.MW.TwitchUsername,
+								Text:     "<UserName>",
+							},
+							Label{
+								AssignTo: &guicontroller.MW.TwitchGame,
+								Text:     "<CurrentGame>",
+							},
+						},
 					},
 				},
 			},
@@ -45,7 +54,7 @@ func main() {
 				Text:     `<a id="twitch_token" href="` + twitch.RequestTokenURL + `">Twitch Login</a>`,
 				OnLinkActivated: func(link *walk.LinkLabelLink) {
 					guicontroller.MW.LL.SetText("Loading...")
-					log.Printf("id: '%s', url: '%s'\n", link.Id(), link.URL())
+					// log.Printf("id: '%s', url: '%s'\n", link.Id(), link.URL())
 					browser.OpenURL(link.URL())
 				},
 			},

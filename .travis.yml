@@ -1,0 +1,16 @@
+language: go
+
+go:
+  - "1.8.x"
+  - master
+
+go_import_path:
+  - github.com/akavel/rsrc
+  - github.com/lxn/walk
+  - github.com/urfave/negroni
+  - github.com/julienschmidt/httprouter
+  - github.com/mitchellh/go-ps
+
+script: 
+  - rsrc -manifest main.manifest -o release/rsrc.syso
+  - go build -o release/%BINARY%-%VERSION%-windows-amd64.exe

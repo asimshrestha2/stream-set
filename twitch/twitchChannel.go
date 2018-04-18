@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+
+	"github.com/asimshrestha2/stream-set/guicontroller"
 )
 
 type Channel struct {
@@ -38,6 +40,12 @@ type GameC struct {
 	GameA string `json:"game"`
 }
 
+func SetTwitchChannel() {
+	UserChannel = GetChannelInfo()
+	guicontroller.MW.TwitchUsername.SetText(UserChannel.DisplayName)
+	guicontroller.MW.TwitchGame.SetText("Current Game: " + UserChannel.Game)
+}
+
 func GetChannelInfo() Channel {
 	body, err := TwitchRequest("GET", TwitchAPIURL+"/channel", nil, true, false)
 	if err != nil {
@@ -64,6 +72,7 @@ func UpdateChannelGame(game string) {
 			log.Panicf("%s\n", err)
 		} else {
 			log.Println(ret)
+			SetTwitchChannel()
 		}
 
 	}

@@ -33,7 +33,7 @@ func TwitchTokenAPI(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 		twitch.Token = q.Get("access_token")
 		go func() {
 			if !setChannel {
-				SetTwitchChannel()
+				twitch.SetTwitchChannel()
 				twitch.GetTopGamesNames()
 				log.Printf("%v\n", twitch.GameNameList)
 				setChannel = true
@@ -48,9 +48,4 @@ func TwitchGameListAPI(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	w.Header().Set("Content-Type", "application/json")
 	retj, _ := json.Marshal(twitch.GameNameList)
 	fmt.Fprintf(w, "%s", retj)
-}
-
-func SetTwitchChannel() {
-	twitch.UserChannel = twitch.GetChannelInfo()
-	guicontroller.MW.TwitchUsername.SetText(twitch.UserChannel.DisplayName)
 }

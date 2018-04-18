@@ -8,23 +8,45 @@ import (
 	"unsafe"
 
 	"github.com/asimshrestha2/stream-set/twitch"
+	ps "github.com/mitchellh/go-ps"
 )
 
 var (
-	mod                     = syscall.NewLazyDLL("user32.dll")
-	procGetWindowText       = mod.NewProc("GetWindowTextW")
-	procGetWindowTextLength = mod.NewProc("GetWindowTextLengthW")
+	currentGame = &game{
+		name: "",
+		hwnd: 0,
+		pid:  -1,
+	}
+
+	user32                       = syscall.NewLazyDLL("user32.dll")
+	procGetWindowText            = user32.NewProc("GetWindowTextW")
+	procGetWindowTextLength      = user32.NewProc("GetWindowTextLengthW")
+	procGetWindowThreadProcessID = user32.NewProc("GetWindowThreadProcessId")
 )
 
 type (
 	HANDLE uintptr
 	HWND   HANDLE
+	game   struct {
+		name string
+		hwnd uintptr
+		pid  int
+	}
 )
 
 func GetWindowTextLength(hwnd HWND) int {
 	ret, _, _ := procGetWindowTextLength.Call(uintptr(hwnd))
 
 	return int(ret)
+}
+
+func GetWindowThreadProcessID(hwnd HWND) int {
+	var pid int
+	procGetWindowThreadProcessID.Call(
+		uintptr(hwnd),
+		uintptr(unsafe.Pointer(&pid)))
+
+	return pid
 }
 
 func GetWindowText(hwnd HWND) string {
@@ -39,9 +61,23 @@ func GetWindowText(hwnd HWND) string {
 }
 
 func getWindow(funcName string) uintptr {
-	proc := mod.NewProc(funcName)
+	proc := user32.NewProc(funcName)
 	hwnd, _, _ := proc.Call()
 	return hwnd
+}
+
+func doesProccessExist(pid int) bool {
+	p, err := ps.FindProcess(pid)
+
+	if err != nil {
+		fmt.Println("Error : ", err)
+		return false
+	}
+	if p != nil {
+		return true
+	}
+
+	return false
 }
 
 func GetWindows() {
@@ -56,11 +92,17 @@ func GetWindows() {
 				text := GetWindowText(HWND(hwnd))
 				if lastTitle != text {
 					lastTitle = text
-					gameInList := contains(twitch.GameNameList, strings.TrimSpace(text))
-					fmt.Println(t, "Updated: Current Window: ", text, " #hwnd: ", hwnd, " Last Window: ", lastTitle, " Game in List: ", gameInList)
-					if twitch.Token != "" && gameInList {
-						fmt.Println("Game Updated To: " + strings.TrimSpace(text))
-						twitch.UpdateChannelGame(strings.TrimSpace(text))
+					trimedText := strings.TrimSpace(text)
+					gameInList := contains(twitch.GameNameList, trimedText)
+					currentPID := GetWindowThreadProcessID(HWND(hwnd))
+					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " Game in List: ", gameInList)
+					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
+					if twitch.Token != "" && !doesProccessExist(currentGame.pid) && currentGame.name != trimedText && currentGame.pid != currentPID && gameInList {
+						currentGame.name = trimedText
+						currentGame.hwnd = hwnd
+						currentGame.pid = currentPID
+						fmt.Println("Game Updated To: " + trimedText)
+						twitch.UpdateChannelGame(trimedText)
 					}
 				}
 			}

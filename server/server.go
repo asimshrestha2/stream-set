@@ -19,19 +19,19 @@ func StartServer() {
 
 	r := httprouter.New()
 	r.GET("/", controller.Index)
-	r.GET("/notification/", controller.Notification)
-	r.GET("/settings/", controller.Settings)
-	r.GET("/api/", controller.APIIndex)
-	r.GET("/api/getfilepath", controller.APIGetFilePath)
-	r.POST("/api/setsettings", controller.APISettings)
+	// r.GET("/notification/", controller.Notification)
+	// r.GET("/settings/", controller.Settings)
+	// r.GET("/api/", controller.APIIndex)
+	// r.GET("/api/getfilepath", controller.APIGetFilePath)
+	// r.POST("/api/setsettings", controller.APISettings)
 
 	// Twitch API
 	r.GET("/twitch/token", controller.TwitchTokenAPI)
 	r.GET("/twitch/gamelist", controller.TwitchGameListAPI)
 
-	r.GET("/fileimage", controller.FileImage)
-	r.GET("/ws", controller.WSHandler)
-	r.ServeFiles("/static/*filepath", http.Dir(dir))
+	// r.GET("/fileimage", controller.FileImage)
+	// r.GET("/ws", controller.WSHandler)
+	// r.ServeFiles("/static/*filepath", http.Dir(dir))
 
 	// n := negroni.Classic() // Includes some default middlewares
 	// n.UseHandler(r)
