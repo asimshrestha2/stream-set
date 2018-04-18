@@ -18,33 +18,49 @@ func main() {
 	go server.StartServer()
 	go gamewindows.GetWindows()
 
+	fontTitle := Font{
+		Family:    "Arial",
+		PointSize: 18,
+	}
+
+	fontSubTitle := Font{
+		Family:    "Arial",
+		PointSize: 16,
+	}
+
 	if _, err := (MainWindow{
-		AssignTo: &guicontroller.MW.MainWindow,
-		Title:    "Stream Set",
-		MinSize:  Size{320, 240},
-		Size:     Size{400, 300},
-		MaxSize:  Size{450, 350},
-		Layout:   VBox{MarginsZero: true},
+		AssignTo:   &guicontroller.MW.MainWindow,
+		Title:      "Stream Set",
+		MinSize:    Size{320, 240},
+		Size:       Size{400, 300},
+		MaxSize:    Size{450, 350},
+		Background: SolidColorBrush{Color: walk.RGB(29, 37, 44)},
+		Layout:     VBox{MarginsZero: true},
 		Children: []Widget{
 			HSplitter{
 				MaxSize:     Size{400, 128},
 				HandleWidth: 0,
 				Children: []Widget{
 					ImageView{
-						AssignTo: &guicontroller.MW.TwitchImage,
-						Image:    "Asim_Ymir.png",
-						Margin:   10,
-						Mode:     ImageViewModeShrink,
+						AssignTo:   &guicontroller.MW.TwitchImage,
+						Background: SolidColorBrush{Color: walk.RGB(29, 37, 44)},
+						Image:      "Asim_Ymir.png",
+						Margin:     10,
+						Mode:       ImageViewModeShrink,
 					},
 					VSplitter{
 						Children: []Widget{
 							Label{
-								AssignTo: &guicontroller.MW.TwitchUsername,
-								Text:     "<UserName>",
+								AssignTo:  &guicontroller.MW.TwitchUsername,
+								Font:      fontTitle,
+								Text:      "<UserName>",
+								TextColor: walk.RGB(225, 225, 225),
 							},
 							Label{
-								AssignTo: &guicontroller.MW.TwitchGame,
-								Text:     "<CurrentGame>",
+								AssignTo:  &guicontroller.MW.TwitchGame,
+								Font:      fontSubTitle,
+								Text:      "<CurrentGame>",
+								TextColor: walk.RGB(225, 225, 225),
 							},
 						},
 					},
@@ -54,7 +70,6 @@ func main() {
 				AssignTo: &guicontroller.MW.LL,
 				Text:     `<a id="twitch_token" href="` + twitch.RequestTokenURL + `">Twitch Login</a>`,
 				OnLinkActivated: func(link *walk.LinkLabelLink) {
-					guicontroller.MW.LL.SetText("Loading...")
 					// log.Printf("id: '%s', url: '%s'\n", link.Id(), link.URL())
 					browser.OpenURL(link.URL())
 				},

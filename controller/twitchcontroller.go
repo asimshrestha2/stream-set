@@ -39,7 +39,8 @@ func TwitchTokenAPI(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 				setChannel = true
 			}
 		}()
-		guicontroller.MW.LL.SetText("Logged In")
+		// guicontroller.MW.LL.SetText("Logged In")
+		guicontroller.MW.LL.SetVisible(false)
 		fmt.Fprintf(w, "<html><body><div>You can close this window now. :D</div></body></html>")
 	}
 }

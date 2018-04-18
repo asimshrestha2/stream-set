@@ -19,10 +19,6 @@ before_script:
   - set GOARCH=amd64
   - set GOOS=windows
 
-go_import_path:
-  - github.com/akavel/rsrc
-  - github.com/lxn/walk
-
 script: 
   - rsrc -manifest main.manifest -o release/rsrc.syso
   - go build -ldflags="-H windowsgui" -o release/%BINARY%-%VERSION%-windows-amd64.exe

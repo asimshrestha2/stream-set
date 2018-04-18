@@ -1,5 +1,5 @@
 set BINARY=stream-set
-set VERSION=v0.0.1
+set VERSION=v0.0.2
 REM set GOARCH=amd64
 REM set GOOS=windows
 REM go build -o release/%BINARY%-%VERSION%-windows-amd64.exe
