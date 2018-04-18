@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func TwitchRequest(method string, url string, body io.Reader, auth bool) (string, error) {
+func TwitchRequest(method string, url string, body io.Reader, auth bool, context bool) (string, error) {
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return "", err
@@ -15,6 +15,9 @@ func TwitchRequest(method string, url string, body io.Reader, auth bool) (string
 	req.Header.Add("Client-ID", ClientID)
 	if auth {
 		req.Header.Add("Authorization", "OAuth "+Token)
+	}
+	if context {
+		req.Header.Add("Content-Type", "application/json")
 	}
 
 	client := &http.Client{}

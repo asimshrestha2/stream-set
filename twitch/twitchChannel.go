@@ -30,8 +30,16 @@ type Channel struct {
 	Email                        string `json:"email"`
 }
 
+type ChannelG struct {
+	ChannelA GameC `json:"channel"`
+}
+
+type GameC struct {
+	GameA string `json:"game"`
+}
+
 func GetChannelInfo() Channel {
-	body, err := TwitchRequest("GET", TwitchAPIURL+"/channel", nil, true)
+	body, err := TwitchRequest("GET", TwitchAPIURL+"/channel", nil, true, false)
 	if err != nil {
 		log.Panicf("%s\n", err)
 	}
@@ -44,9 +52,19 @@ func GetChannelInfo() Channel {
 
 func UpdateChannelGame(game string) {
 	if game != "" {
-		var jsonStr = []byte(`{"channel":{"game": ` + game + `}}`)
-		if _, err := TwitchRequest("PUT", TwitchAPIURL+"/channel/"+UserChannel.ID, bytes.NewBuffer(jsonStr), true); err != nil {
-			log.Panicf("%s\n", err)
+		resC := &ChannelG{
+			ChannelA: GameC{
+				GameA: game,
+			},
 		}
+
+		res2B, _ := json.Marshal(resC)
+
+		if ret, err := TwitchRequest("PUT", TwitchAPIURL+"/channels/"+UserChannel.ID, bytes.NewBuffer(res2B), true, true); err != nil {
+			log.Panicf("%s\n", err)
+		} else {
+			log.Println(ret)
+		}
+
 	}
 }

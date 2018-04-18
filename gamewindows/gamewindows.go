@@ -2,12 +2,12 @@ package gamewindows
 
 import (
 	"fmt"
-	"log"
+	"strings"
 	"syscall"
 	"time"
 	"unsafe"
 
-	ps "github.com/mitchellh/go-ps"
+	"github.com/asimshrestha2/stream-set/twitch"
 )
 
 var (
@@ -45,30 +45,23 @@ func getWindow(funcName string) uintptr {
 }
 
 func GetWindows() {
+	var lastTitle = ""
 	ticker := time.NewTicker(1 * time.Second)
 
-	IgnoreList := []string{"svchost.exe", "explorer.exe", "System", "[System Process]", "winlogon.exe"}
+	// IgnoreList := []string{"svchost.exe", "explorer.exe", "System", "[System Process]", "winlogon.exe"}
 
 	go func() {
 		for t := range ticker.C {
-
-			// if hwnd := getWindow("GetForegroundWindow"); hwnd != 0 {
-			// 	text := GetWindowText(HWND(hwnd))
-			// 	fmt.Println("window :", text, "# hwnd:", hwnd)
-			// }
-			fmt.Println("Tick at", t)
-			p, err := ps.Processes()
-			if err != nil {
-				log.Fatalf("err: %s", err)
-			}
-
-			if len(p) <= 0 {
-				log.Fatal("should have processes")
-			}
-
-			for _, p1 := range p {
-				if !contains(IgnoreList, p1.Executable()) {
-					log.Print(p1)
+			if hwnd := getWindow("GetForegroundWindow"); hwnd != 0 {
+				text := GetWindowText(HWND(hwnd))
+				if lastTitle != text {
+					lastTitle = text
+					gameInList := contains(twitch.GameNameList, strings.TrimSpace(text))
+					fmt.Println(t, "Updated: Current Window: ", text, " #hwnd: ", hwnd, " Last Window: ", lastTitle, " Game in List: ", gameInList)
+					if twitch.Token != "" && gameInList {
+						fmt.Println("Game Updated To: " + strings.TrimSpace(text))
+						twitch.UpdateChannelGame(strings.TrimSpace(text))
+					}
 				}
 			}
 		}

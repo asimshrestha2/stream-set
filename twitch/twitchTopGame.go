@@ -33,15 +33,15 @@ type GameImages struct {
 }
 
 func GetTopGames() TopGamesResponse {
-	body, err := TwitchRequest("GET", TwitchAPIURL+"/games/top?limit=100", nil, false)
+	body, err := TwitchRequest("GET", TwitchAPIURL+"/games/top?limit=100", nil, false, false)
 	if err != nil {
 		log.Panicf("%s\n", err)
 	}
-	topGamesTresponse := TopGamesResponse{}
-	if err := json.Unmarshal([]byte(body), &topGamesTresponse); err != nil {
+	topGamesResponse := TopGamesResponse{}
+	if err := json.Unmarshal([]byte(body), &topGamesResponse); err != nil {
 		log.Panicf("%s\n", err)
 	}
-	return topGamesTresponse
+	return topGamesResponse
 }
 
 func GetTopGamesNames() {
