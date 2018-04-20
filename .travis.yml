@@ -3,7 +3,13 @@ language: go
 go:
   - "1.8.x"
   - "1.9.x"
-  - master
+  - tip
+
+env:
+  - BINARY=stream-set
+  - VERSION=v0.0.2
+  - GOARCH=amd64
+  - GOOS=windows
 
 install: 
   - go get github.com/golang/lint/golint                        # Linter
@@ -13,12 +19,6 @@ install:
   - go get github.com/julienschmidt/httprouter
   - go get github.com/mitchellh/go-ps
 
-before_script:
-  - set BINARY=stream-set
-  - set VERSION=v0.0.1
-  - set GOARCH=amd64
-  - set GOOS=windows
-
 script: 
   - rsrc -manifest main.manifest -o release/rsrc.syso
-  - go build -ldflags="-H windowsgui" -o release/%BINARY%-%VERSION%-windows-amd64.exe
+  - go build -ldflags="-H windowsgui" -o release/$BINARY-$VERSION-windows-amd64.exe

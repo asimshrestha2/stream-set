@@ -13,7 +13,7 @@ import (
 
 func StartServer() {
 	var dir string
-	flag.StringVar(&dir, "dir", "./static/", "the directory to serve files from. Defaults to the static folder")
+	flag.StringVar(&dir, "dir", "./server/static/", "the directory to serve files from. Defaults to the static folder")
 	controller.GetDataFromFile()
 	flag.Parse()
 

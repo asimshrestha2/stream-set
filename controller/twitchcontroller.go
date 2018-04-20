@@ -35,7 +35,7 @@ func TwitchTokenAPI(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 			if !setChannel {
 				twitch.SetTwitchChannel()
 				twitch.GetTopGamesNames()
-				log.Printf("%v\n", twitch.GameNameList)
+				log.Printf("Length:%d List: %v\n", len(twitch.GameNameList), twitch.GameNameList)
 				setChannel = true
 			}
 		}()

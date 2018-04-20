@@ -3,6 +3,10 @@ package twitch
 import (
 	"encoding/json"
 	"log"
+	"strconv"
+	"time"
+
+	"github.com/asimshrestha2/stream-set/save"
 )
 
 type TopGamesResponse struct {
@@ -32,8 +36,13 @@ type GameImages struct {
 	Template string `json:"template"`
 }
 
-func GetTopGames() TopGamesResponse {
-	body, err := TwitchRequest("GET", TwitchAPIURL+"/games/top?limit=100", nil, false, false)
+func GetTopGames(limit int, offset int) TopGamesResponse {
+	var url = TwitchAPIURL + "/games/top?limit=" + strconv.Itoa(limit)
+	if offset > 0 {
+		url += "&offset=" + strconv.Itoa(offset)
+	}
+	log.Printf("Twitch Request: %s\n", url)
+	body, err := TwitchRequest("GET", url, nil, false, false)
 	if err != nil {
 		log.Panicf("%s\n", err)
 	}
@@ -45,8 +54,17 @@ func GetTopGames() TopGamesResponse {
 }
 
 func GetTopGamesNames() {
-	tgr := GetTopGames()
+	tgr := GetTopGames(100, 0)
+	time.Sleep(500 * time.Millisecond)
+	tgr1 := GetTopGames(100, 100)
+	tgr.Top = append(tgr.Top, tgr1.Top...)
 	for _, g := range tgr.Top {
+		tempGame := dbGame{
+			TwitchName: g.Game.Name,
+		}
+		GameDB.Games = append(GameDB.Games, tempGame)
 		GameNameList = append(GameNameList, g.Game.Name)
 	}
+
+	go save.SaveGameList(GameDB)
 }

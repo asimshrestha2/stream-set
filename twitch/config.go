@@ -17,6 +17,19 @@ const (
 var (
 	Token        = ""
 	GameList     TopGamesResponse
+	GameDB       GameDatabase
 	GameNameList []string
 	UserChannel  Channel
+)
+
+type (
+	GameDatabase struct {
+		Games []dbGame `json:"games"`
+	}
+
+	dbGame struct {
+		TwitchName       string   `json:"twitchName"`
+		FileName         string   `json:"fileName"`
+		AlternativeNames []string `json:"alternativeName"`
+	}
 )

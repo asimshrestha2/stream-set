@@ -20,29 +20,29 @@ func main() {
 
 	fontTitle := Font{
 		Family:    "Arial",
-		PointSize: 18,
+		PointSize: 16,
 	}
 
 	fontSubTitle := Font{
 		Family:    "Arial",
-		PointSize: 16,
+		PointSize: 14,
 	}
 
 	if _, err := (MainWindow{
 		AssignTo:   &guicontroller.MW.MainWindow,
 		Title:      "Stream Set",
-		MinSize:    Size{320, 240},
-		Size:       Size{400, 300},
-		MaxSize:    Size{450, 350},
+		MinSize:    Size{500, 240},
+		Size:       Size{500, 300},
 		Background: SolidColorBrush{Color: walk.RGB(29, 37, 44)},
 		Layout:     VBox{MarginsZero: true},
 		Children: []Widget{
 			HSplitter{
-				MaxSize:     Size{400, 128},
 				HandleWidth: 0,
 				Children: []Widget{
 					ImageView{
 						AssignTo:   &guicontroller.MW.TwitchImage,
+						MinSize:    Size{90, 90},
+						MaxSize:    Size{90, 90},
 						Background: SolidColorBrush{Color: walk.RGB(29, 37, 44)},
 						Image:      "Asim_Ymir.png",
 						Margin:     10,
@@ -53,13 +53,13 @@ func main() {
 							Label{
 								AssignTo:  &guicontroller.MW.TwitchUsername,
 								Font:      fontTitle,
-								Text:      "<UserName>",
+								Text:      "Not Logged In",
 								TextColor: walk.RGB(225, 225, 225),
 							},
 							Label{
 								AssignTo:  &guicontroller.MW.TwitchGame,
 								Font:      fontSubTitle,
-								Text:      "<CurrentGame>",
+								Text:      "",
 								TextColor: walk.RGB(225, 225, 225),
 							},
 						},
@@ -67,6 +67,7 @@ func main() {
 				},
 			},
 			LinkLabel{
+				MinSize:  Size{380, 30},
 				AssignTo: &guicontroller.MW.LL,
 				Text:     `<a id="twitch_token" href="` + twitch.RequestTokenURL + `">Twitch Login</a>`,
 				OnLinkActivated: func(link *walk.LinkLabelLink) {
@@ -78,7 +79,7 @@ func main() {
 		StatusBarItems: []StatusBarItem{
 			StatusBarItem{
 				AssignTo:    &guicontroller.MW.CurrentWindow,
-				Text:        "Current Window: <window>",
+				Text:        "Current Window: ",
 				ToolTipText: "Current Active Window",
 			},
 		},

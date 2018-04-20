@@ -43,7 +43,7 @@ type GameC struct {
 func SetTwitchChannel() {
 	UserChannel = GetChannelInfo()
 	guicontroller.MW.TwitchUsername.SetText(UserChannel.DisplayName)
-	guicontroller.MW.TwitchGame.SetText("Current Game:\r\n" + UserChannel.Game)
+	guicontroller.MW.TwitchGame.SetText("Current Game: \r\n" + UserChannel.Game)
 }
 
 func GetChannelInfo() Channel {
