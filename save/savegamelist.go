@@ -32,6 +32,16 @@ func SaveGameList(savestruct interface{}) {
 	}
 }
 
+func RemoveGameList() error {
+	if GameListExist() {
+		err := os.Remove(gamelistfile)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func LoadGameList(t interface{}) error {
 	if GameListExist() {
 		f, err := ioutil.ReadFile(gamelistfile)

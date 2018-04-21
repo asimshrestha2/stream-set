@@ -35,6 +35,32 @@ func main() {
 		Size:       Size{500, 300},
 		Background: SolidColorBrush{Color: walk.RGB(29, 37, 44)},
 		Layout:     VBox{MarginsZero: true},
+		MenuItems: []MenuItem{
+			Menu{
+				Text: "&File",
+				Items: []MenuItem{
+					Action{
+						AssignTo:    &guicontroller.MW.Cleargamelist,
+						Text:        "&Clear GameList",
+						OnTriggered: guicontroller.MW.Cleargamelist_Triggered,
+					},
+					Separator{},
+					Action{
+						Text:        "Exit",
+						OnTriggered: func() { guicontroller.MW.Close() },
+					},
+				},
+			},
+			// Menu{
+			// 	Text: "&Help",
+			// 	Items: []MenuItem{
+			// 		Action{
+			// 			Text:        "About",
+			// 			OnTriggered: mw.aboutAction_Triggered,
+			// 		},
+			// 	},
+			// },
+		},
 		Children: []Widget{
 			HSplitter{
 				HandleWidth: 0,
