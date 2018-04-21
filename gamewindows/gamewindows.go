@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/asimshrestha2/stream-set/guicontroller"
-
+	"github.com/asimshrestha2/stream-set/save"
 	"github.com/asimshrestha2/stream-set/twitch"
 	ps "github.com/mitchellh/go-ps"
 )
@@ -68,18 +68,15 @@ func getWindow(funcName string) uintptr {
 	return hwnd
 }
 
-func doesProccessExist(pid int) bool {
+func doesProccessExist(pid int) ps.Process {
 	p, err := ps.FindProcess(pid)
 
 	if err != nil {
 		fmt.Println("Error : ", err)
-		return false
-	}
-	if p != nil {
-		return true
+		return nil
 	}
 
-	return false
+	return p
 }
 
 func GetWindows() {
@@ -95,17 +92,24 @@ func GetWindows() {
 				if lastTitle != text {
 					lastTitle = text
 					trimedText := strings.TrimSpace(text)
-					gameInList := contains(twitch.GameNameList, trimedText)
+					gameIndex := containsInDB(twitch.GameDB, trimedText)
 					currentPID := GetWindowThreadProcessID(HWND(hwnd))
-					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " Game in List: ", gameInList)
-					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
+					currentProcces, _ := ps.FindProcess(currentGame.pid)
+					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " Game in List: ", gameIndex)
+					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd, twitch.Token != "" && currentProcces != nil && currentGame.name != trimedText && currentGame.pid != currentPID && gameIndex > -1)
 					guicontroller.MW.CurrentWindow.SetText("Current Window: " + trimedText)
-					if twitch.Token != "" && !doesProccessExist(currentGame.pid) && currentGame.name != trimedText && currentGame.pid != currentPID && gameInList {
+					if twitch.Token != "" && currentProcces != nil && currentGame.name != trimedText && currentGame.pid != currentPID && gameIndex > -1 {
 						currentGame.name = trimedText
 						currentGame.hwnd = hwnd
 						currentGame.pid = currentPID
 						fmt.Println("Game Updated To: " + trimedText)
 						twitch.UpdateChannelGame(trimedText)
+
+						if twitch.GameDB[gameIndex].FileName == "" {
+							twitch.GameDB[gameIndex].FileName = currentProcces.Executable()
+							go save.SaveGameList(twitch.GameDB)
+						}
+
 					}
 				}
 			}
@@ -115,6 +119,15 @@ func GetWindows() {
 	// time.Sleep(1600 * time.Millisecond)
 	// ticker.Stop()
 	// fmt.Println("Ticker stopped")
+}
+
+func containsInDB(slice []twitch.DBGame, item string) int {
+	for i, s := range slice {
+		if s.TwitchName == item {
+			return i
+		}
+	}
+	return -1
 }
 
 func contains(slice []string, item string) bool {

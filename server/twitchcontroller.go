@@ -1,9 +1,8 @@
-package controller
+package server
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/asimshrestha2/stream-set/guicontroller"
@@ -35,7 +34,6 @@ func TwitchTokenAPI(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 			if !setChannel {
 				twitch.SetTwitchChannel()
 				twitch.GetTopGamesNames()
-				log.Printf("Length:%d List: %v\n", len(twitch.GameNameList), twitch.GameNameList)
 				setChannel = true
 			}
 		}()
@@ -47,6 +45,6 @@ func TwitchTokenAPI(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 
 func TwitchGameListAPI(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	retj, _ := json.Marshal(twitch.GameNameList)
+	retj, _ := json.Marshal(twitch.GameDB)
 	fmt.Fprintf(w, "%s", retj)
 }

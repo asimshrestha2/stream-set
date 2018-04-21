@@ -2,6 +2,7 @@ package save
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -31,8 +32,16 @@ func SaveGameList(savestruct interface{}) {
 	}
 }
 
-func LoadGameList() {
+func LoadGameList(t interface{}) error {
+	if GameListExist() {
+		f, err := ioutil.ReadFile(gamelistfile)
+		if err != nil {
+			return err
+		}
 
+		json.Unmarshal(f, &t)
+	}
+	return nil
 }
 
 func GameListExist() bool {

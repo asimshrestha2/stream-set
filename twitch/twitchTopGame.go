@@ -54,17 +54,24 @@ func GetTopGames(limit int, offset int) TopGamesResponse {
 }
 
 func GetTopGamesNames() {
-	tgr := GetTopGames(100, 0)
-	time.Sleep(500 * time.Millisecond)
-	tgr1 := GetTopGames(100, 100)
-	tgr.Top = append(tgr.Top, tgr1.Top...)
-	for _, g := range tgr.Top {
-		tempGame := dbGame{
-			TwitchName: g.Game.Name,
+	if save.GameListExist() {
+		err := save.LoadGameList(&GameDB)
+		if err != nil {
+			log.Fatalln(err)
 		}
-		GameDB.Games = append(GameDB.Games, tempGame)
-		GameNameList = append(GameNameList, g.Game.Name)
-	}
+		log.Println(GameDB)
+	} else {
+		tgr := GetTopGames(100, 0)
+		time.Sleep(500 * time.Millisecond)
+		tgr1 := GetTopGames(100, 100)
+		tgr.Top = append(tgr.Top, tgr1.Top...)
+		for _, g := range tgr.Top {
+			tempGame := DBGame{
+				TwitchName: g.Game.Name,
+			}
+			GameDB = append(GameDB, tempGame)
+		}
 
-	go save.SaveGameList(GameDB)
+		go save.SaveGameList(GameDB)
+	}
 }
