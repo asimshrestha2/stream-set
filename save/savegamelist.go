@@ -29,6 +29,12 @@ func SaveGameList(savestruct interface{}) {
 			log.Fatal(err)
 			return
 		}
+	} else {
+		jf, _ := json.Marshal(savestruct)
+		err := ioutil.WriteFile(gamelistfile, jf, 666)
+		if err != nil {
+			return
+		}
 	}
 }
 

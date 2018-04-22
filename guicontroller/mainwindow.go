@@ -19,10 +19,6 @@ type MyMainWindow struct {
 	Cleargamelist  *walk.Action
 }
 
-type AlertDialog struct {
-	*walk.Dialog
-}
-
 var MW = &MyMainWindow{}
 
 func (mw *MyMainWindow) Cleargamelist_Triggered() {
