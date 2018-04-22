@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/asimshrestha2/stream-set/save"
+
 	"github.com/asimshrestha2/stream-set/gamewindows"
 	"github.com/asimshrestha2/stream-set/guicontroller"
 	"github.com/asimshrestha2/stream-set/server"
@@ -16,7 +18,12 @@ func main() {
 	walk.Resources.SetRootDirPath("./img")
 
 	go server.StartServer()
-	go gamewindows.GetWindows()
+	go func() {
+		save.LoadSettings()
+		gamewindows.DefaultGame = save.GetTwitchDefaultGame()
+		gamewindows.WaitToReset = save.GetResetTime()
+		gamewindows.GetWindows()
+	}()
 
 	fontTitle := Font{
 		Family:    "Arial",
@@ -26,6 +33,11 @@ func main() {
 	fontSubTitle := Font{
 		Family:    "Arial",
 		PointSize: 14,
+	}
+
+	fontSSubTitle := Font{
+		Family:    "Arial",
+		PointSize: 10,
 	}
 
 	if _, err := (MainWindow{
@@ -76,18 +88,26 @@ func main() {
 					},
 					VSplitter{
 						Children: []Widget{
+							VSpacer{},
 							Label{
 								AssignTo:  &guicontroller.MW.TwitchUsername,
 								Font:      fontTitle,
 								Text:      "Not Logged In",
 								TextColor: walk.RGB(225, 225, 225),
 							},
+							VSpacer{},
+							Label{
+								Font:      fontSSubTitle,
+								Text:      "Current Game: ",
+								TextColor: walk.RGB(225, 225, 225),
+							},
 							Label{
 								AssignTo:  &guicontroller.MW.TwitchGame,
 								Font:      fontSubTitle,
-								Text:      "",
+								Text:      "Unknown",
 								TextColor: walk.RGB(225, 225, 225),
 							},
+							VSpacer{},
 						},
 					},
 				},

@@ -16,7 +16,9 @@ import (
 )
 
 var (
-	currentGame = &game{
+	lastWindowChange time.Time
+	gameIndex        = -1
+	currentGame      = &game{
 		name: "",
 		hwnd: 0,
 		pid:  -1,
@@ -80,17 +82,26 @@ func GetWindows() {
 		for t := range ticker.C {
 			if hwnd := getWindow("GetForegroundWindow"); hwnd != 0 {
 				text := GetWindowText(HWND(hwnd))
+				lastGameProcess, _ := ps.FindProcess(currentGame.pid)
 				if lastTitle != text {
+					lastWindowChange = time.Now()
 					lastTitle = text
 					trimedText := strings.TrimSpace(text)
-					gameIndex := helper.ContainsInDB(twitch.GameDB, trimedText)
+
+					if twitch.GameDB == nil {
+						twitch.GetTopGamesNames()
+					}
+
+					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText)
 					currentPID := GetWindowThreadProcessID(HWND(hwnd))
-					lastGameProcess, _ := ps.FindProcess(currentGame.pid)
+
 					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " GameDB Index: ", gameIndex)
 					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
 					guicontroller.MW.CurrentWindow.SetText("Current Window: " + trimedText)
+
 					if twitch.Token != "" && lastGameProcess == nil && currentGame.name != trimedText &&
 						currentGame.pid != currentPID && gameIndex > -1 {
+
 						currentGame.name = trimedText
 						currentGame.hwnd = hwnd
 						currentGame.pid = currentPID
@@ -109,13 +120,17 @@ func GetWindows() {
 							twitch.GameDB[gameIndex].FileName = gameProcess.Executable()
 							go save.SaveGameList(twitch.GameDB)
 						}
+						continue
 					}
+				}
+
+				if gameIndex <= -1 && twitch.Token != "" && lastGameProcess == nil &&
+					twitch.UserChannel.Game != DefaultGame && time.Now().Sub(lastWindowChange).Seconds() >= WaitToReset {
+
+					fmt.Println("Game Updated To: " + DefaultGame)
+					twitch.UpdateChannelGame(DefaultGame)
 				}
 			}
 		}
 	}()
-
-	// time.Sleep(1600 * time.Millisecond)
-	// ticker.Stop()
-	// fmt.Println("Ticker stopped")
 }

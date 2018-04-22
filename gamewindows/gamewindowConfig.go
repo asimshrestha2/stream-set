@@ -1,5 +1,7 @@
 package gamewindows
 
 var (
-	IgnoreList []string
+	IgnoreList  []string
+	WaitToReset float64 = 500
+	DefaultGame         = "IRL"
 )
