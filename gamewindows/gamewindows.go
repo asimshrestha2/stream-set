@@ -74,7 +74,7 @@ func GetWindows() {
 	var lastTitle = ""
 	ticker := time.NewTicker(1 * time.Second)
 
-	// IgnoreList := []string{"svchost.exe", "explorer.exe", "System", "[System Process]", "winlogon.exe"}
+	IgnoreList = save.GetIgnoreList()
 
 	go func() {
 		for t := range ticker.C {
@@ -99,7 +99,8 @@ func GetWindows() {
 
 						log.Println("GameDB: ", twitch.GameDB[gameIndex])
 
-						if twitch.UserChannel.Game != twitch.GameDB[gameIndex].TwitchName {
+						if helper.ContainsText(IgnoreList, trimedText) <= -1 &&
+							twitch.UserChannel.Game != twitch.GameDB[gameIndex].TwitchName {
 							fmt.Println("Game Updated To: " + trimedText)
 							twitch.UpdateChannelGame(trimedText)
 						}

@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var (
+const (
 	gamelistfile = "gamelist.json"
 )
 

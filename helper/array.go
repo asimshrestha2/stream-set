@@ -1,6 +1,10 @@
 package helper
 
-import "github.com/asimshrestha2/stream-set/twitch"
+import (
+	"strings"
+
+	"github.com/asimshrestha2/stream-set/twitch"
+)
 
 func ContainsInDB(slice []twitch.DBGame, item string) int {
 	for i, s := range slice {
@@ -20,6 +24,16 @@ func ContainsInDB(slice []twitch.DBGame, item string) int {
 func Contains(slice []string, item string) int {
 	for i, s := range slice {
 		if s == item {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func ContainsText(slice []string, item string) int {
+	for i, s := range slice {
+		if strings.Contains(s, item) {
 			return i
 		}
 	}
