@@ -17,7 +17,6 @@ import (
 
 var (
 	lastWindowChange time.Time
-	gameIndex        = -1
 	currentGame      = &game{
 		name: "",
 		hwnd: 0,
@@ -75,18 +74,22 @@ func getWindow(funcName string) uintptr {
 func GetWindows() {
 	var lastTitle = ""
 	ticker := time.NewTicker(1 * time.Second)
-
+	gameIndex := -1
 	IgnoreList = save.GetIgnoreList()
-
+	log.Println(WaitToReset)
 	go func() {
 		for t := range ticker.C {
 			if hwnd := getWindow("GetForegroundWindow"); hwnd != 0 {
+
 				text := GetWindowText(HWND(hwnd))
+				trimedText := strings.TrimSpace(text)
+				guicontroller.MW.CurrentWindow.SetText("Current Window: " + trimedText)
+
 				lastGameProcess, _ := ps.FindProcess(currentGame.pid)
+
 				if lastTitle != text {
 					lastWindowChange = time.Now()
 					lastTitle = text
-					trimedText := strings.TrimSpace(text)
 
 					if twitch.GameDB == nil {
 						twitch.GetTopGamesNames()
@@ -97,9 +100,8 @@ func GetWindows() {
 
 					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " GameDB Index: ", gameIndex)
 					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
-					guicontroller.MW.CurrentWindow.SetText("Current Window: " + trimedText)
 
-					if twitch.Token != "" && lastGameProcess == nil && currentGame.name != trimedText &&
+					if twitch.Token != "" && currentGame.name != trimedText && lastGameProcess == nil &&
 						currentGame.pid != currentPID && gameIndex > -1 {
 
 						currentGame.name = trimedText
@@ -124,8 +126,8 @@ func GetWindows() {
 					}
 				}
 
-				if gameIndex <= -1 && twitch.Token != "" && lastGameProcess == nil &&
-					twitch.UserChannel.Game != DefaultGame && time.Now().Sub(lastWindowChange).Seconds() >= WaitToReset {
+				if gameIndex <= -1 && twitch.Token != "" && twitch.UserChannel.Game != DefaultGame && lastGameProcess == nil &&
+					time.Now().Sub(lastWindowChange).Seconds() >= WaitToReset {
 
 					fmt.Println("Game Updated To: " + DefaultGame)
 					twitch.UpdateChannelGame(DefaultGame)

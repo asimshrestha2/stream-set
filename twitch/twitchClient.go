@@ -1,12 +1,15 @@
 package twitch
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 )
 
 func TwitchRequest(method string, url string, body io.Reader, auth bool, context bool) (string, error) {
+	fmt.Println("Twitch Request: ", url)
+
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return "", err

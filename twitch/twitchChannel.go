@@ -68,10 +68,9 @@ func UpdateChannelGame(game string) {
 
 		res2B, _ := json.Marshal(resC)
 
-		if ret, err := TwitchRequest("PUT", TwitchAPIURL+"/channels/"+UserChannel.ID, bytes.NewBuffer(res2B), true, true); err != nil {
+		if _, err := TwitchRequest("PUT", TwitchAPIURL+"/channels/"+UserChannel.ID, bytes.NewBuffer(res2B), true, true); err != nil {
 			log.Panicf("%s\n", err)
 		} else {
-			log.Println(ret)
 			SetTwitchChannel()
 		}
 

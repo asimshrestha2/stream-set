@@ -41,7 +41,6 @@ func GetTopGames(limit int, offset int) TopGamesResponse {
 	if offset > 0 {
 		url += "&offset=" + strconv.Itoa(offset)
 	}
-	log.Printf("Twitch Request: %s\n", url)
 	body, err := TwitchRequest("GET", url, nil, false, false)
 	if err != nil {
 		log.Panicf("%s\n", err)
@@ -59,7 +58,7 @@ func GetTopGamesNames() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		log.Println(GameDB)
+		// log.Println(GameDB)
 	} else {
 		tgr := GetTopGames(100, 0)
 		time.Sleep(500 * time.Millisecond)

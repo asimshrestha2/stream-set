@@ -132,4 +132,9 @@ func main() {
 	}.Run()); err != nil {
 		log.Fatal(err)
 	}
+
+	guicontroller.MW.SetBounds(walk.Rectangle{
+		Height: 300,
+		Width:  500,
+	})
 }

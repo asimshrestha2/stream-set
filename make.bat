@@ -1,13 +1,14 @@
+@echo off
 set BINARY=stream-set
 set VERSION=v0.0.2
-REM set GOARCH=amd64
-REM set GOOS=windows
+set GOARCH=amd64
+set GOOS=windows
 REM go build -o release/%BINARY%-%VERSION%-windows-amd64.exe
 
 IF "%1"=="dev" (
     echo "Dev Build"
     rsrc -manifest main.manifest -o release/rsrc.syso
-    go build -o release/%BINARY%-%VERSION%-windows-amd64.exe
+    go build -o release/%BINARY%-%VERSION%-windows-%GOARCH%.exe
 ) 
 IF "%1"=="pro" (
     echo "Production Build"
