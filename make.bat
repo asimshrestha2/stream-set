@@ -12,6 +12,13 @@ set "list=.json .ini"
   copy *%%i release
  )
 )
+set "list=img server"
+(
+ for %%i in (%list%) do (
+  echo Copying: %%i
+  echo D|xcopy /s /Y /EXCLUDE:exclude.txt %%i release\%%i
+ )
+)
 IF "%1"=="dev" (
     echo "Dev Build"
     rsrc -manifest main.manifest -o release/rsrc.syso

@@ -85,7 +85,7 @@ func main() {
 						MinSize:    Size{90, 90},
 						MaxSize:    Size{90, 90},
 						Background: SolidColorBrush{Color: walk.RGB(29, 37, 44)},
-						Image:      "Asim_Ymir.png",
+						Image:      "account.png",
 						Margin:     10,
 						Mode:       ImageViewModeShrink,
 					},
