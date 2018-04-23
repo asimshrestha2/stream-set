@@ -63,15 +63,18 @@ func main() {
 					},
 				},
 			},
-			// Menu{
-			// 	Text: "&Help",
-			// 	Items: []MenuItem{
-			// 		Action{
-			// 			Text:        "About",
-			// 			OnTriggered: mw.aboutAction_Triggered,
-			// 		},
-			// 	},
-			// },
+			Menu{
+				Text: "&Help",
+				Items: []MenuItem{
+					Action{
+						Text: "&About",
+						OnTriggered: func() {
+							url := "https://github.com/asimshrestha2/stream-set#stream-set"
+							browser.OpenURL(url)
+						},
+					},
+				},
+			},
 		},
 		Children: []Widget{
 			HSplitter{

@@ -95,8 +95,9 @@ func GetWindows() {
 						twitch.GetTopGamesNames()
 					}
 
-					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText)
 					currentPID := GetWindowThreadProcessID(HWND(hwnd))
+					currentProcess, _ := ps.FindProcess(currentPID)
+					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText, currentProcess.Executable())
 
 					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " GameDB Index: ", gameIndex)
 					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
@@ -108,8 +109,6 @@ func GetWindows() {
 						currentGame.hwnd = hwnd
 						currentGame.pid = currentPID
 
-						gameProcess, _ := ps.FindProcess(currentPID)
-
 						log.Println("GameDB: ", twitch.GameDB[gameIndex])
 
 						if helper.ContainsText(IgnoreList, trimedText) <= -1 &&
@@ -119,7 +118,7 @@ func GetWindows() {
 						}
 
 						if twitch.GameDB[gameIndex].FileName == "" {
-							twitch.GameDB[gameIndex].FileName = gameProcess.Executable()
+							twitch.GameDB[gameIndex].FileName = currentProcess.Executable()
 							go save.SaveGameList(twitch.GameDB)
 						}
 						continue

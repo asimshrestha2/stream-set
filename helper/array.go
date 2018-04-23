@@ -6,16 +6,18 @@ import (
 	"github.com/asimshrestha2/stream-set/twitch"
 )
 
-func ContainsInDB(slice []twitch.DBGame, item string) int {
+func ContainsInDB(slice []twitch.DBGame, item string, filename string) int {
 	for i, s := range slice {
 		if s.TwitchName == item {
 			return i
 		}
 
-		if len(s.AlternativeNames) > 0 {
-			if Contains(s.AlternativeNames, item) > -1 {
-				return i
-			}
+		if filename != "" && s.FileName == filename {
+			return i
+		}
+
+		if len(s.AlternativeNames) > 0 && Contains(s.AlternativeNames, item) > -1 {
+			return i
 		}
 	}
 	return -1

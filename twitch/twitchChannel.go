@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/lxn/walk"
+
 	"github.com/asimshrestha2/stream-set/guicontroller"
+	"github.com/asimshrestha2/stream-set/save"
 )
 
 type Channel struct {
@@ -42,6 +45,12 @@ type GameC struct {
 
 func SetTwitchChannel() {
 	UserChannel = GetChannelInfo()
+	save.Image(UserChannel.Logo)
+	img, err := walk.NewImageFromFile(save.ImagePathFromURL(UserChannel.Logo))
+	if err != nil {
+		log.Println(err)
+	}
+	guicontroller.MW.TwitchImage.SetImage(img)
 	guicontroller.MW.TwitchUsername.SetText(UserChannel.DisplayName)
 	guicontroller.MW.TwitchGame.SetText(UserChannel.Game)
 }
