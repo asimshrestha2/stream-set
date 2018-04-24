@@ -9,23 +9,23 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type (
-	Return struct {
-		Err  bool   `json:"err"`
-		Data string `json:"data"`
-	}
-)
+// type (
+// 	Return struct {
+// 		Err  bool   `json:"err"`
+// 		Data string `json:"data"`
+// 	}
+// )
 
-// APIIndex for Website
-func APIIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	w.Header().Set("Content-Type", "application/json")
-	u := Return{
-		Err:  false,
-		Data: "Hi",
-	}
-	uj, _ := json.Marshal(u)
-	fmt.Fprintf(w, "%s", uj)
-}
+// // APIIndex for Website
+// func APIIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// 	w.Header().Set("Content-Type", "application/json")
+// 	u := Return{
+// 		Err:  false,
+// 		Data: "Hi",
+// 	}
+// 	uj, _ := json.Marshal(u)
+// 	fmt.Fprintf(w, "%s", uj)
+// }
 
 func APIGetFilePath(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")

@@ -3,8 +3,20 @@ package helper
 import (
 	"strings"
 
+	"github.com/asimshrestha2/stream-set/save"
+
 	"github.com/asimshrestha2/stream-set/twitch"
 )
+
+func UpdateInDB(data twitch.DBGame) {
+	for i, d := range twitch.GameDB {
+		if d.TwitchName == data.TwitchName {
+			twitch.GameDB[i].FileName = data.FileName
+			twitch.GameDB[i].AlternativeNames = data.AlternativeNames
+		}
+	}
+	go save.SaveGameList(twitch.GameDB)
+}
 
 func ContainsInDB(slice []twitch.DBGame, item string, filename string) int {
 	for i, s := range slice {

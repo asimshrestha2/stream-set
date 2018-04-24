@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	lastWindowChange time.Time
-	currentGame      = &game{
+	gameChange  time.Time
+	currentGame = &game{
 		name: "",
 		hwnd: 0,
 		pid:  -1,
@@ -88,7 +88,6 @@ func GetWindows() {
 				lastGameProcess, _ := ps.FindProcess(currentGame.pid)
 
 				if lastTitle != text {
-					lastWindowChange = time.Now()
 					lastTitle = text
 
 					if twitch.GameDB == nil {
@@ -104,6 +103,7 @@ func GetWindows() {
 
 					if twitch.Token != "" && currentGame.name != trimedText && lastGameProcess == nil &&
 						currentGame.pid != currentPID && gameIndex > -1 {
+						gameChange = time.Now()
 
 						currentGame.name = trimedText
 						currentGame.hwnd = hwnd
@@ -113,8 +113,8 @@ func GetWindows() {
 
 						if helper.ContainsText(IgnoreList, trimedText) <= -1 &&
 							twitch.UserChannel.Game != twitch.GameDB[gameIndex].TwitchName {
-							fmt.Println("Game Updated To: " + trimedText)
-							twitch.UpdateChannelGame(trimedText)
+							fmt.Println("Game Updated To: " + twitch.GameDB[gameIndex].TwitchName)
+							twitch.UpdateChannelGame(twitch.GameDB[gameIndex].TwitchName)
 						}
 
 						if twitch.GameDB[gameIndex].FileName == "" {
@@ -126,7 +126,7 @@ func GetWindows() {
 				}
 
 				if gameIndex <= -1 && twitch.Token != "" && twitch.UserChannel.Game != DefaultGame && lastGameProcess == nil &&
-					time.Now().Sub(lastWindowChange).Seconds() >= WaitToReset {
+					time.Now().Sub(gameChange).Seconds() >= WaitToReset {
 
 					fmt.Println("Game Updated To: " + DefaultGame)
 					twitch.UpdateChannelGame(DefaultGame)

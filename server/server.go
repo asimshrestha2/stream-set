@@ -28,9 +28,13 @@ func StartServer() {
 	r.GET("/twitch/token", TwitchTokenAPI)
 	r.GET("/twitch/gamelist", TwitchGameListAPI)
 
+	// Gamelist
+	r.GET("/gamelist", Gamelist)
+	r.POST("/gamelist", GamelistPost)
+
 	// r.GET("/fileimage", FileImage)
 	// r.GET("/ws", WSHandler)
-	// r.ServeFiles("/static/*filepath", http.Dir(dir))
+	r.ServeFiles("/static/*filepath", http.Dir(dir))
 
 	// n := negroni.Classic() // Includes some default middlewares
 	// n.UseHandler(r)

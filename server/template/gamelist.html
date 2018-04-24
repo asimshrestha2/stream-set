@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Game List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/gamelist.css" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="filter">
+            <div class="input">
+                <img class="icon" src="/static/img/ic_search.svg" />
+                <input id="search" v-model="search" type="text" placeholder="Search" />
+            </div>
+        </div>
+        <div class="list">
+            <ul v-if="filtered.length">
+                <li v-for="(game, i) in filtered" v-on:click="openEdit(game.twitchName)">
+                    <div class="title">{{ game.twitchName }}</div>
+                    <div v-if="game.fileName != ''" class="sub-title">{{ game.fileName }}</div>
+                </li>
+            </ul>
+            <p class="error" v-else>Can't find {{search}}.</p>
+        </div>
+        <div v-if="edit.show" id="edit-dialog">
+            <div class="title">Edit: {{games[edit.index].twitchName}}</div>
+            <div class="subtitle">Filename: {{games[edit.index].fileName}}</div>
+            <div class="subtitle">Alternative Name:</div>
+            <ul v-if="games[edit.index].alternativeName">
+                <li v-for="(name, i) in games[edit.index].alternativeName">
+                    {{name}}
+                </li>
+            </ul>
+            <div v-else class="subtitle">Missing</div>
+            <div class="input">
+                <input type="text" v-model="edit.input" placeholder="Add Alternative Names" />
+                <div class="btn main" v-on:click="addAlt()">Add</div>
+            </div>
+            <div class="buttons">
+                <div class="btn main" v-on:click="updateGame(); edit.show = false">Save</div>
+                <div class="btn" v-on:click="edit.show = false">Close</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="/static/js/gamelist.js"></script>
+</body>
+
+</html>

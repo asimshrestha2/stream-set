@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat";
+}
+  
+body {
+    background: #212121;
+}
+  
+input, button {
+    height: 25px;
+    font-size: 18px;
+    border: 0;
+    padding: 5px;
+}
+  
+input {
+    background: #757575;
+}
+  
+#app {
+    margin: 0 auto;
+    max-width: 900px;
+    background: #FFFFFF;
+}
+#app .error {
+    color: #e11111;
+}
+#app p.error {
+    padding: 20px;
+}
+#app .filter {
+    padding: 20px;
+}
+#app .filter .input {
+    margin: 0 auto;
+    position: relative;
+    max-width: 600px;
+    background: #757575;
+}
+#app .filter .input .icon {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    top: 0;
+    right: 0;
+}
+#app .filter .input input {
+    color: #FFFFFF;
+    width: 550px;
+}
+#app .list {
+    background: #FFFFFF;
+}
+#app .list ul {
+    list-style: none;
+}
+#app .list ul li {
+    padding: 10px 20px;
+    border-bottom: 1px solid #212121;
+    cursor: pointer;
+}
+#app .list ul li:hover {
+    background: #a1a1a1;
+}
+#app .list ul li:last-child {
+    border-bottom: none;
+}
+#app .list ul li .title {
+    font-size: 18px;
+}
+#app .list ul li .sub-title {
+    font-size: 12px;
+    font-style: italic;
+}
+  
+#edit-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    background: #FFFFFF;
+    box-shadow: 0 3px 5px #212121;
+}
+#edit-dialog ul {
+    padding-left: 40px;
+}
+#edit-dialog .title {
+    padding: 10px 20px;
+    font-size: 20px;
+}
+#edit-dialog .subtitle {
+    padding: 5px 20px;
+    font-size: 14px;
+}
+#edit-dialog .input {
+    padding: 10px 20px;
+}
+#edit-dialog .input input {
+    width: 460px;
+}
+#edit-dialog .buttons {
+    margin: 0 0 0 auto;
+    height: 35px;
+    padding: 10px;
+}
+#edit-dialog .btn {
+    border: 1px solid #453c66;
+    color: #453c66;
+    margin-left: 10px;
+    line-height: 20px;
+    padding: 5px 15px;
+    border-radius: 3px;
+    float: right;
+    cursor: pointer;
+    user-select: none;
+}
+#edit-dialog .btn.main {
+    background: #453c66;
+    color: #FFFFFF;
+}
+  

@@ -52,6 +52,13 @@ func main() {
 				Text: "&File",
 				Items: []MenuItem{
 					Action{
+						Text: "&Edit GameList",
+						OnTriggered: func() {
+							url := "http://localhost:8000/gamelist"
+							browser.OpenURL(url)
+						},
+					},
+					Action{
 						AssignTo:    &guicontroller.MW.Cleargamelist,
 						Text:        "&Clear GameList",
 						OnTriggered: guicontroller.MW.Cleargamelist_Triggered,

@@ -1,12 +1,16 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/asimshrestha2/stream-set/helper"
+	"github.com/asimshrestha2/stream-set/twitch"
 
 	"github.com/Joker/jade"
 
@@ -19,9 +23,33 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "<html><body>Hi</body></html>")
 }
 
+// Gamelist for App
+func Gamelist(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	data, err := ioutil.ReadFile("./server/template/gamelist.html")
+	if err != nil {
+		fmt.Fprintf(w, err.Error())
+	}
+	fmt.Fprintf(w, string(data))
+}
+
+// GamelistPost : To update the Game that was updated
+func GamelistPost(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	decoder := json.NewDecoder(r.Body)
+	var dbData twitch.DBGame
+	err := decoder.Decode(&dbData)
+	if err != nil {
+		fmt.Fprintf(w, "")
+	}
+	defer r.Body.Close()
+	// log.Println(dbData)
+	helper.UpdateInDB(dbData)
+	fmt.Fprintf(w, "")
+}
+
 // Notification for Website
 func Notification(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	notificationTemp, _ := template.ParseFiles("./template/notification.html")
+	notificationTemp, _ := template.ParseFiles("./server/template/notification.html")
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	p, lastMod, err := readFileIfModified(time.Time{})
 	if err != nil {
@@ -48,7 +76,7 @@ func Notification(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 // Settings for Website
 func Settings(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	data, err := ioutil.ReadFile("./template/settings.pug")
+	data, err := ioutil.ReadFile("./server/template/settings.pug")
 	if err != nil {
 		fmt.Fprintf(w, "File Error: %v", err)
 		return
@@ -63,7 +91,7 @@ func Settings(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 }
 
-//FileImage: to convert image location threw server
+//FileImage : to convert image location threw server
 func FileImage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	filepath := r.FormValue("path")
 	http.ServeFile(w, r, filepath)
