@@ -1,7 +1,7 @@
 # Stream Set
 A tool that helps Twitch Streamers run their streams.
 
-![alt text](https://raw.githubusercontent.com/asimshrestha2/stream-set/master/screenshots/Stream_Set.png)
+![stream set](https://raw.githubusercontent.com/asimshrestha2/stream-set/master/screenshots/Stream_Set.png)
 
 ## Currently Supported
 * Auto Updating Games

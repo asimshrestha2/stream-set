@@ -41,7 +41,7 @@ func GetTopGames(limit int, offset int) TopGamesResponse {
 	if offset > 0 {
 		url += "&offset=" + strconv.Itoa(offset)
 	}
-	body, err := TwitchRequest("GET", url, nil, false, false)
+	body, err := Request("GET", url, nil, false, false)
 	if err != nil {
 		log.Panicf("%s\n", err)
 	}

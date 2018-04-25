@@ -8,6 +8,7 @@ import (
 	"github.com/asimshrestha2/stream-set/twitch"
 )
 
+//UpdateInDB updates the DataBase Game List
 func UpdateInDB(data twitch.DBGame) {
 	for i, d := range twitch.GameDB {
 		if d.TwitchName == data.TwitchName {
@@ -18,6 +19,7 @@ func UpdateInDB(data twitch.DBGame) {
 	go save.SaveGameList(twitch.GameDB)
 }
 
+//ContainsInDB Checks if the title, filename of the window contains in the database
 func ContainsInDB(slice []twitch.DBGame, item string, filename string) int {
 	for i, s := range slice {
 		if s.TwitchName == item {
@@ -35,6 +37,7 @@ func ContainsInDB(slice []twitch.DBGame, item string, filename string) int {
 	return -1
 }
 
+//Contains returns index in from the array for the matching item in the array with the item
 func Contains(slice []string, item string) int {
 	for i, s := range slice {
 		if s == item {
@@ -45,9 +48,10 @@ func Contains(slice []string, item string) int {
 	return -1
 }
 
+//ContainsText returns index in from the array for the matching item in the array with a part in item (string)
 func ContainsText(slice []string, item string) int {
 	for i, s := range slice {
-		if strings.Contains(s, item) {
+		if strings.Contains(item, s) {
 			return i
 		}
 	}

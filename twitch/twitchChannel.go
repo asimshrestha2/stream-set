@@ -56,7 +56,7 @@ func SetTwitchChannel() {
 }
 
 func GetChannelInfo() Channel {
-	body, err := TwitchRequest("GET", TwitchAPIURL+"/channel", nil, true, false)
+	body, err := Request("GET", TwitchAPIURL+"/channel", nil, true, false)
 	if err != nil {
 		log.Panicf("%s\n", err)
 	}
@@ -77,7 +77,7 @@ func UpdateChannelGame(game string) {
 
 		res2B, _ := json.Marshal(resC)
 
-		if _, err := TwitchRequest("PUT", TwitchAPIURL+"/channels/"+UserChannel.ID, bytes.NewBuffer(res2B), true, true); err != nil {
+		if _, err := Request("PUT", TwitchAPIURL+"/channels/"+UserChannel.ID, bytes.NewBuffer(res2B), true, true); err != nil {
 			log.Panicf("%s\n", err)
 		} else {
 			SetTwitchChannel()

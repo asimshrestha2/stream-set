@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func TwitchRequest(method string, url string, body io.Reader, auth bool, context bool) (string, error) {
+func Request(method string, url string, body io.Reader, auth bool, context bool) (string, error) {
 	fmt.Println("Twitch Request: ", url)
 
 	req, err := http.NewRequest(method, url, body)
