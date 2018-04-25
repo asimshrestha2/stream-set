@@ -27,6 +27,16 @@ var (
 	procGetWindowText            = user32.NewProc("GetWindowTextW")
 	procGetWindowTextLength      = user32.NewProc("GetWindowTextLengthW")
 	procGetWindowThreadProcessID = user32.NewProc("GetWindowThreadProcessId")
+	procGetWindowModuleFileName  = user32.NewProc("GetWindowModuleFileNameW")
+
+	kernel32                      = syscall.NewLazyDLL("kernel32.dll")
+	procOpenProcess               = kernel32.NewProc("OpenProcess")
+	procCloseHandle               = kernel32.NewProc("CloseHandle")
+	procGetVolumePathName         = kernel32.NewProc("GetVolumePathNameW")
+	procQueryFullProcessImageName = kernel32.NewProc("QueryFullProcessImageNameW")
+
+	psapi                       = syscall.NewLazyDLL("Psapi.dll")
+	procGetProcessImageFileName = psapi.NewProc("GetProcessImageFileNameW")
 )
 
 type (
@@ -65,10 +75,79 @@ func GetWindowText(hwnd HWND) string {
 	return syscall.UTF16ToString(buf)
 }
 
+func GetWindowModuleFileName(hwnd HWND) string {
+	textLen := 2000
+	buf := make([]uint16, textLen)
+	procGetWindowModuleFileName.Call(
+		uintptr(hwnd),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(textLen))
+
+	return syscall.UTF16ToString(buf)
+}
+
 func getWindow(funcName string) uintptr {
 	proc := user32.NewProc(funcName)
 	hwnd, _, _ := proc.Call()
 	return hwnd
+}
+
+func OpenProcess(desiredAccess uint32, inheritHandle bool, processId uint32) (handle HANDLE, err error) {
+	inherit := 0
+	if inheritHandle {
+		inherit = 1
+	}
+
+	ret, _, err := procOpenProcess.Call(
+		uintptr(desiredAccess),
+		uintptr(inherit),
+		uintptr(processId))
+	if err != nil && err.Error() == "The operation completed successfully." {
+		err = nil
+	}
+	handle = HANDLE(ret)
+	return
+}
+
+func CloseHandle(object HANDLE) bool {
+	ret, _, _ := procCloseHandle.Call(
+		uintptr(object))
+	return ret != 0
+}
+
+func GetVolumePathName(path string) string {
+	textLen := 256
+	inpath := syscall.StringToUTF16(path)
+	buf := make([]uint16, textLen)
+	procGetVolumePathName.Call(
+		uintptr(unsafe.Pointer(&inpath[0])),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(textLen))
+
+	return syscall.UTF16ToString(buf)
+}
+
+func QueryFullProcessImageName(handle HANDLE) string {
+	textLen := 256
+	buf := make([]uint16, textLen)
+	procQueryFullProcessImageName.Call(
+		uintptr(handle),
+		uintptr(0),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(unsafe.Pointer(&textLen)))
+
+	return syscall.UTF16ToString(buf)
+}
+
+func GetProcessImageFileName(handle HANDLE) string {
+	textLen := 256
+	buf := make([]uint16, textLen)
+	procGetProcessImageFileName.Call(
+		uintptr(handle),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(textLen))
+
+	return syscall.UTF16ToString(buf)
 }
 
 func GetWindows() {
@@ -76,12 +155,13 @@ func GetWindows() {
 	ticker := time.NewTicker(1 * time.Second)
 	gameIndex := -1
 	IgnoreList = save.GetIgnoreList()
-	log.Println(WaitToReset)
+
 	go func() {
 		for t := range ticker.C {
 			if hwnd := getWindow("GetForegroundWindow"); hwnd != 0 {
 
 				text := GetWindowText(HWND(hwnd))
+
 				trimedText := strings.TrimSpace(text)
 				guicontroller.MW.CurrentWindow.SetText("Current Window: " + trimedText)
 
@@ -95,6 +175,16 @@ func GetWindows() {
 					}
 
 					currentPID := GetWindowThreadProcessID(HWND(hwnd))
+					handler, err := OpenProcess(1024|16, true, uint32(currentPID))
+					if err != nil {
+						fmt.Println(err)
+					}
+
+					filepath := QueryFullProcessImageName(handler)
+					// fmt.Println(HWND(handler), uint32(currentPID), currentPID)
+					CloseHandle(handler)
+
+					fmt.Println("\nFilepath: ", filepath)
 					currentProcess, _ := ps.FindProcess(currentPID)
 					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText, currentProcess.Executable())
 

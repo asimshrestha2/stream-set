@@ -1,4 +1,6 @@
 # Stream Set
+[![Go Report Card](https://goreportcard.com/badge/github.com/asimshrestha2/stream-set)](https://goreportcard.com/report/github.com/asimshrestha2/stream-set) [![GoDoc](https://godoc.org/github.com/asimshrestha2/stream-set?status.svg)](https://godoc.org/github.com/asimshrestha2/stream-set)
+
 A tool that helps Twitch Streamers run their streams.
 
 ![stream set](https://raw.githubusercontent.com/asimshrestha2/stream-set/master/screenshots/Stream_Set.png)
