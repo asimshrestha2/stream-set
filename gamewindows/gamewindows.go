@@ -184,12 +184,12 @@ func GetWindows() {
 					// fmt.Println(HWND(handler), uint32(currentPID), currentPID)
 					CloseHandle(handler)
 
-					fmt.Println("\nFilepath: ", filepath)
 					currentProcess, _ := ps.FindProcess(currentPID)
 					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText, currentProcess.Executable())
 
 					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " GameDB Index: ", gameIndex)
 					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
+					fmt.Println("Filepath: ", filepath)
 
 					if twitch.Token != "" && currentGame.name != trimedText && lastGameProcess == nil &&
 						currentGame.pid != currentPID && gameIndex > -1 {
