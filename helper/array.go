@@ -12,7 +12,7 @@ import (
 func UpdateInDB(data twitch.DBGame) {
 	for i, d := range twitch.GameDB {
 		if d.TwitchName == data.TwitchName {
-			twitch.GameDB[i].FileName = data.FileName
+			twitch.GameDB[i].FilePath = data.FilePath
 			twitch.GameDB[i].AlternativeNames = data.AlternativeNames
 		}
 	}
@@ -20,13 +20,13 @@ func UpdateInDB(data twitch.DBGame) {
 }
 
 //ContainsInDB Checks if the title, filename of the window contains in the database
-func ContainsInDB(slice []twitch.DBGame, item string, filename string) int {
+func ContainsInDB(slice []twitch.DBGame, item string, filepath string) int {
 	for i, s := range slice {
 		if s.TwitchName == item {
 			return i
 		}
 
-		if filename != "" && s.FileName == filename {
+		if filepath != "" && s.FilePath == filepath {
 			return i
 		}
 

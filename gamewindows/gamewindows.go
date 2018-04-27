@@ -184,12 +184,26 @@ func GetWindows() {
 					// fmt.Println(HWND(handler), uint32(currentPID), currentPID)
 					CloseHandle(handler)
 
-					currentProcess, _ := ps.FindProcess(currentPID)
-					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText, currentProcess.Executable())
+					// currentProcess, _ := ps.FindProcess(currentPID)
+					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText, filepath)
+					gameClient := helper.GetGameClient(filepath)
 
 					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " GameDB Index: ", gameIndex)
 					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
-					fmt.Println("Filepath: ", filepath)
+					fmt.Println("Filepath: ", filepath, " Client: ", gameClient)
+
+					if gameIndex <= -1 && gameClient != "" {
+						gdb, err := twitch.SearchGames(helper.GetGameNameWithGameClient(filepath, gameClient))
+						if err != nil {
+							log.Println(err)
+						} else {
+							gdb.FilePath = filepath
+							twitch.GameDB = append(twitch.GameDB, gdb)
+							gameIndex = len(twitch.GameDB) - 1
+							log.Println("Found Game In DB: ", twitch.GameDB[gameIndex])
+							go save.SaveGameList(twitch.GameDB)
+						}
+					}
 
 					if twitch.Token != "" && currentGame.name != trimedText && lastGameProcess == nil &&
 						currentGame.pid != currentPID && gameIndex > -1 {
@@ -207,8 +221,8 @@ func GetWindows() {
 							twitch.UpdateChannelGame(twitch.GameDB[gameIndex].TwitchName)
 						}
 
-						if twitch.GameDB[gameIndex].FileName == "" {
-							twitch.GameDB[gameIndex].FileName = currentProcess.Executable()
+						if twitch.GameDB[gameIndex].FilePath == "" {
+							twitch.GameDB[gameIndex].FilePath = filepath
 							go save.SaveGameList(twitch.GameDB)
 						}
 						continue

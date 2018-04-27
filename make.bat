@@ -21,11 +21,11 @@ set "list=img server"
 )
 IF "%1"=="dev" (
     echo "Dev Build"
-    rsrc -manifest main.manifest -o release/rsrc.syso
-    go build -o release/%BINARY%-%VERSION%-windows-%GOARCH%.exe
+    rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
+    go build -i -o release/%BINARY%-%VERSION%-windows-%GOARCH%.exe
 ) 
 IF "%1"=="pro" (
     echo "Production Build"
-    rsrc -manifest main.manifest -o release/rsrc.syso
-    go build -ldflags="-H windowsgui" -o release/%BINARY%-%VERSION%-windows-amd64.exe
+    rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
+    go build -i -ldflags="-H windowsgui" -o release/%BINARY%-%VERSION%-windows-amd64.exe
 )

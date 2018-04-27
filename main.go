@@ -40,11 +40,12 @@ func main() {
 		PointSize: 10,
 	}
 
-	if _, err := (MainWindow{
+	mw := MainWindow{
 		AssignTo:   &guicontroller.MW.MainWindow,
 		Title:      "Stream Set",
 		MinSize:    Size{500, 240},
 		Size:       Size{500, 300},
+		Icon:       "icon.ico",
 		Background: SolidColorBrush{Color: walk.RGB(29, 37, 44)},
 		Layout:     VBox{MarginsZero: true},
 		MenuItems: []MenuItem{
@@ -139,12 +140,63 @@ func main() {
 				ToolTipText: "Current Active Window",
 			},
 		},
-	}.Run()); err != nil {
+	}
+
+	icon, err := walk.Resources.Icon("icon.ico")
+	if err != nil {
 		log.Fatal(err)
 	}
 
-	guicontroller.MW.SetBounds(walk.Rectangle{
-		Height: 300,
-		Width:  500,
+	ni, err := walk.NewNotifyIcon()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ni.Dispose()
+
+	if err := ni.SetIcon(icon); err != nil {
+		log.Fatal(err)
+	}
+	if err := ni.SetToolTip("Click for info or use the context menu to exit."); err != nil {
+		log.Fatal(err)
+	}
+
+	// When the left mouse button is pressed, bring up our balloon.
+	ni.MouseDown().Attach(func(x, y int, button walk.MouseButton) {
+		if button != walk.LeftButton {
+			return
+		}
+
+		if err := ni.ShowCustom(
+			"Walk NotifyIcon Example",
+			"There are multiple ShowX methods sporting different icons."); err != nil {
+
+			log.Fatal(err)
+		}
 	})
+
+	// We put an exit action into the context menu.
+	exitAction := walk.NewAction()
+	if err := exitAction.SetText("E&xit"); err != nil {
+		log.Fatal(err)
+	}
+	exitAction.Triggered().Attach(func() { walk.App().Exit(0) })
+	if err := ni.ContextMenu().Actions().Add(exitAction); err != nil {
+		log.Fatal(err)
+	}
+
+	// The notify icon is hidden initially, so we have to make it visible.
+	if err := ni.SetVisible(true); err != nil {
+		log.Fatal(err)
+	}
+
+	// Now that the icon is visible, we can bring up an info balloon.
+	if err := ni.ShowInfo("Walk NotifyIcon Example", "Click the icon to show again."); err != nil {
+		log.Fatal(err)
+	}
+
+	if _, err := mw.Run(); err != nil {
+		log.Fatal(err)
+	}
+
+	guicontroller.MW.MainWindow.SetIcon(icon)
 }

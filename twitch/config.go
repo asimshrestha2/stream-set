@@ -24,7 +24,7 @@ var (
 type (
 	DBGame struct {
 		TwitchName       string   `json:"twitchName"`
-		FileName         string   `json:"fileName"`
+		FilePath         string   `json:"filePath"`
 		AlternativeNames []string `json:"alternativeName"`
 	}
 )

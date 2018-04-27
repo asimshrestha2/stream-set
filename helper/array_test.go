@@ -10,15 +10,15 @@ func TestContainsInDB(t *testing.T) {
 	type args struct {
 		slice    []twitch.DBGame
 		item     string
-		filename string
+		filepath string
 	}
 
 	db := []twitch.DBGame{
-		{TwitchName: "Game 1", FileName: "Game1.exe", AlternativeNames: nil},
-		{TwitchName: "Game 2", FileName: "Game2.exe", AlternativeNames: []string{"Game 2.0", "Game 2.1"}},
-		{TwitchName: "Game 3", FileName: "Game3.exe", AlternativeNames: nil},
-		{TwitchName: "Game 4", FileName: "Game4.exe", AlternativeNames: nil},
-		{TwitchName: "Game 5", FileName: "Game5.exe", AlternativeNames: nil},
+		{TwitchName: "Game 1", FilePath: "Game1.exe", AlternativeNames: nil},
+		{TwitchName: "Game 2", FilePath: "Game2.exe", AlternativeNames: []string{"Game 2.0", "Game 2.1"}},
+		{TwitchName: "Game 3", FilePath: "Game3.exe", AlternativeNames: nil},
+		{TwitchName: "Game 4", FilePath: "Game4.exe", AlternativeNames: nil},
+		{TwitchName: "Game 5", FilePath: "Game5.exe", AlternativeNames: nil},
 	}
 
 	tests := []struct {
@@ -29,28 +29,28 @@ func TestContainsInDB(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			"When item not found",
-			args{slice: db, item: "apple", filename: "apple.exe"},
+			args{db, "apple", "apple.exe"},
 			-1,
 		},
 		{
 			"When item found without filename",
-			args{slice: db, item: "Game 1", filename: ""},
+			args{db, "Game 1", ""},
 			0,
 		},
 		{
 			"When item found with filename",
-			args{slice: db, item: "Aasdf", filename: "Game3.exe"},
+			args{db, "Aasdf", "Game3.exe"},
 			2,
 		},
 		{
 			"When item found with AltName",
-			args{slice: db, item: "Game 2.0", filename: ""},
+			args{db, "Game 2.0", ""},
 			1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ContainsInDB(tt.args.slice, tt.args.item, tt.args.filename); got != tt.want {
+			if got := ContainsInDB(tt.args.slice, tt.args.item, tt.args.filepath); got != tt.want {
 				t.Errorf("ContainsInDB() = %v, want %v", got, tt.want)
 			}
 		})
