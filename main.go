@@ -25,21 +25,6 @@ func main() {
 		gamewindows.GetWindows()
 	}()
 
-	fontTitle := Font{
-		Family:    "Arial",
-		PointSize: 16,
-	}
-
-	fontSubTitle := Font{
-		Family:    "Arial",
-		PointSize: 14,
-	}
-
-	fontSSubTitle := Font{
-		Family:    "Arial",
-		PointSize: 10,
-	}
-
 	mw := MainWindow{
 		AssignTo:   &guicontroller.MW.MainWindow,
 		Title:      "Stream Set",
@@ -102,19 +87,19 @@ func main() {
 							VSpacer{},
 							Label{
 								AssignTo:  &guicontroller.MW.TwitchUsername,
-								Font:      fontTitle,
+								Font:      guicontroller.FontTitle,
 								Text:      "Not Logged In",
 								TextColor: walk.RGB(225, 225, 225),
 							},
 							VSpacer{},
 							Label{
-								Font:      fontSSubTitle,
+								Font:      guicontroller.FontSSubTitle,
 								Text:      "Current Game: ",
 								TextColor: walk.RGB(225, 225, 225),
 							},
 							Label{
 								AssignTo:  &guicontroller.MW.TwitchGame,
-								Font:      fontSubTitle,
+								Font:      guicontroller.FontSubTitle,
 								Text:      "Unknown",
 								TextColor: walk.RGB(225, 225, 225),
 							},

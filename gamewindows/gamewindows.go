@@ -181,10 +181,8 @@ func GetWindows() {
 					}
 
 					filepath := QueryFullProcessImageName(handler)
-					// fmt.Println(HWND(handler), uint32(currentPID), currentPID)
 					CloseHandle(handler)
 
-					// currentProcess, _ := ps.FindProcess(currentPID)
 					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText, filepath)
 					gameClient := helper.GetGameClient(filepath)
 
