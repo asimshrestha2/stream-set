@@ -200,7 +200,6 @@ func GetWindows() {
 							gdb.FilePath = filepath
 							twitch.GameDB = append(twitch.GameDB, gdb)
 							gameIndex = len(twitch.GameDB) - 1
-							log.Println("Found Game In DB: ", twitch.GameDB[gameIndex])
 							go save.SaveGameList(twitch.GameDB)
 						}
 					}

@@ -166,14 +166,17 @@ func main() {
 			return
 		}
 
-		if err := ni.ShowCustom(
-			"Walk NotifyIcon Example",
-			"There are multiple ShowX methods sporting different icons."); err != nil {
-
-			log.Fatal(err)
-		}
+		guicontroller.MW.MainWindow.Show()
 	})
 
+	hideAction := walk.NewAction()
+	if err := hideAction.SetText("Hide Stream Set"); err != nil {
+		log.Fatal(err)
+	}
+	hideAction.Triggered().Attach(func() { guicontroller.MW.MainWindow.Hide() })
+	if err := ni.ContextMenu().Actions().Add(hideAction); err != nil {
+		log.Fatal(err)
+	}
 	// We put an exit action into the context menu.
 	exitAction := walk.NewAction()
 	if err := exitAction.SetText("E&xit"); err != nil {

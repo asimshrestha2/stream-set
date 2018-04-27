@@ -22,14 +22,14 @@
             <ul v-if="filtered.length">
                 <li v-for="(game, i) in filtered" v-on:click="openEdit(game.twitchName)">
                     <div class="title">{{ game.twitchName }}</div>
-                    <div v-if="game.fileName != ''" class="sub-title">{{ game.fileName }}</div>
+                    <div v-if="game.filePath != ''" class="sub-title">{{ game.filePath }}</div>
                 </li>
             </ul>
             <p class="error" v-else>Can't find {{search}}.</p>
         </div>
         <div v-if="edit.show" id="edit-dialog">
             <div class="title">Edit: {{games[edit.index].twitchName}}</div>
-            <div class="subtitle">Filename: {{games[edit.index].fileName}}</div>
+            <div class="subtitle">File Path: {{games[edit.index].filePath}}</div>
             <div class="subtitle">Alternative Name:</div>
             <ul v-if="games[edit.index].alternativeName">
                 <li v-for="(name, i) in games[edit.index].alternativeName">
