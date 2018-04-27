@@ -6,10 +6,12 @@ import (
 	"net/url"
 )
 
+// SearchRespose - Search Response
 type SearchRespose struct {
 	Games []SGame `json:"games"`
 }
 
+// SGame - Search Game
 type SGame struct {
 	Name          string     `json:"name"`
 	Popularity    int64      `json:"popularity"`
@@ -21,6 +23,7 @@ type SGame struct {
 	Locale        string     `json:"locale"`
 }
 
+// SearchGames sends a request to twitch and checks if there is a game based on query
 func SearchGames(query string) (DBGame, error) {
 	quertP, _ := url.Parse(query)
 	uri := TwitchAPIURL + "/search/games?query=" + quertP.String()

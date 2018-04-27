@@ -10,7 +10,9 @@ import (
 	"path"
 )
 
-func Image(imageurl string) {
+type ResponseHandler func()
+
+func Image(imageurl string, responseHandler ResponseHandler) {
 	purl, err := url.Parse(imageurl)
 	filepath := "./img/" + path.Base(purl.Path)
 	if err != nil {
@@ -42,6 +44,7 @@ func Image(imageurl string) {
 
 	fmt.Println("Image Exists!")
 
+	defer responseHandler()
 }
 
 func ImagePathFromURL(imageurl string) string {

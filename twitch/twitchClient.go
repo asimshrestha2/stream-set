@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// Request - request for twitch api
 func Request(method string, url string, body io.Reader, auth bool, context bool) (string, error) {
 	fmt.Println("Twitch Request: ", url)
 

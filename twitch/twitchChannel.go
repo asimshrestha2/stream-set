@@ -43,16 +43,25 @@ type GameC struct {
 	GameA string `json:"game"`
 }
 
+var (
+	imageSet = false
+)
+
 func SetTwitchChannel() {
 	UserChannel = GetChannelInfo()
-	save.Image(UserChannel.Logo)
-	img, err := walk.NewImageFromFile(save.ImagePathFromURL(UserChannel.Logo))
-	if err != nil {
-		log.Println(err)
-	}
-	guicontroller.MW.TwitchImage.SetImage(img)
 	guicontroller.MW.TwitchUsername.SetText(UserChannel.DisplayName)
 	guicontroller.MW.TwitchGame.SetText(UserChannel.Game)
+	if !imageSet {
+		save.Image(UserChannel.Logo, func() {
+			imageSet = true
+			img, err := walk.NewImageFromFile(save.ImagePathFromURL(UserChannel.Logo))
+			if err != nil {
+				imageSet = false
+				log.Println(err)
+			}
+			guicontroller.MW.TwitchImage.SetImage(img)
+		})
+	}
 }
 
 func GetChannelInfo() Channel {
