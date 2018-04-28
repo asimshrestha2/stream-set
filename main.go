@@ -141,7 +141,7 @@ func main() {
 	if err := ni.SetIcon(icon); err != nil {
 		log.Fatal(err)
 	}
-	if err := ni.SetToolTip("Click for info or use the context menu to exit."); err != nil {
+	if err := ni.SetToolTip("Stream Set"); err != nil {
 		log.Fatal(err)
 	}
 
@@ -154,15 +154,23 @@ func main() {
 		guicontroller.MW.MainWindow.Show()
 	})
 
-	hideAction := walk.NewAction()
-	if err := hideAction.SetText("Hide Stream Set"); err != nil {
+	toggleVisibilityAction := walk.NewAction()
+	if err := toggleVisibilityAction.SetText("Hide Stream Set"); err != nil {
 		log.Fatal(err)
 	}
-	hideAction.Triggered().Attach(func() { guicontroller.MW.MainWindow.Hide() })
-	if err := ni.ContextMenu().Actions().Add(hideAction); err != nil {
+	toggleVisibilityAction.Triggered().Attach(func() {
+		if guicontroller.MW.MainWindow.Visible() {
+			guicontroller.MW.MainWindow.Hide()
+			toggleVisibilityAction.SetText("Show Stream Set")
+		} else {
+			guicontroller.MW.MainWindow.Show()
+			toggleVisibilityAction.SetText("Hide Stream Set")
+		}
+	})
+	if err := ni.ContextMenu().Actions().Add(toggleVisibilityAction); err != nil {
 		log.Fatal(err)
 	}
-	// We put an exit action into the context menu.
+
 	exitAction := walk.NewAction()
 	if err := exitAction.SetText("E&xit"); err != nil {
 		log.Fatal(err)
@@ -174,11 +182,6 @@ func main() {
 
 	// The notify icon is hidden initially, so we have to make it visible.
 	if err := ni.SetVisible(true); err != nil {
-		log.Fatal(err)
-	}
-
-	// Now that the icon is visible, we can bring up an info balloon.
-	if err := ni.ShowInfo("Walk NotifyIcon Example", "Click the icon to show again."); err != nil {
 		log.Fatal(err)
 	}
 

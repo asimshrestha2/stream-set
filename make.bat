@@ -1,6 +1,6 @@
 @echo off
 set BINARY=stream-set
-set VERSION=v0.0.21
+set VERSION=v0.0.3
 set GOARCH=amd64
 set GOOS=windows
 REM go build -o release/%BINARY%-%VERSION%-windows-amd64.exe
@@ -22,10 +22,10 @@ set "list=img server"
 IF "%1"=="dev" (
     echo "Dev Build"
     rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
-    go build -i -o release/%BINARY%-%VERSION%-windows-%GOARCH%.exe
+    go build -i -o release/%BINARY%.exe
 ) 
 IF "%1"=="pro" (
     echo "Production Build"
     rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
-    go build -i -ldflags="-H windowsgui" -o release/%BINARY%-%VERSION%-windows-amd64.exe
+    go build -i -ldflags="-H windowsgui" -o release/%BINARY%.exe
 )
