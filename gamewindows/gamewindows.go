@@ -186,9 +186,7 @@ func GetWindows() {
 					gameIndex = helper.ContainsInDB(twitch.GameDB, trimedText, filepath)
 					gameClient := helper.GetGameClient(filepath)
 
-					fmt.Println(t, "Updated: Current Window: ", text, " Last Window: ", lastTitle, " GameDB Index: ", gameIndex)
-					fmt.Println("Pid: ", currentPID, " #hwnd: ", hwnd)
-					fmt.Println("Filepath: ", filepath, " Client: ", gameClient)
+					fmt.Printf("%v - Current Window: %s (Index: %d, PID: %d, Path: %s)\n", t, trimedText, gameIndex, currentPID, filepath)
 
 					if gameIndex <= -1 && gameClient != "" {
 						gdb, err := twitch.SearchGames(helper.GetGameNameWithGameClient(filepath, gameClient))

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"time"
 )
 
 //https://api.steampowered.com/ISteamApps/GetAppList/v2/
@@ -80,7 +81,7 @@ func SaveSteamGames(steamresponse interface{}) {
 
 func GetApps() (SteamResponse, error) {
 	sr := SteamResponse{}
-	if _, err := os.Stat(steamgamesfile); os.IsNotExist(err) {
+	if stat, err := os.Stat(steamgamesfile); os.IsNotExist(err) || time.Now().Sub(stat.ModTime()).Hours() >= 24 {
 		res, err := Request("https://api.steampowered.com/ISteamApps/GetAppList/v2/")
 		if err != nil {
 			return sr, err
