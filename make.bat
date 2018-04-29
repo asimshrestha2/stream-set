@@ -19,14 +19,17 @@ set "list=img server"
   echo D|xcopy /s /Y /EXCLUDE:exclude.txt %%i release\%%i
  )
 )
+del .\release\versioninfo.json
 IF "%1"=="dev" (
     echo "Dev Build"
-    rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
+    REM rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
+    go generate
     go build -i -o release/%BINARY%.exe
 ) 
 IF "%1"=="pro" (
     echo "Production Build"
-    rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
+    REM rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
+    go generate
     go build -i -ldflags="-H windowsgui" -o release/%BINARY%.exe
     7z a .\release\%BINARY%.zip .\release\*
 )
