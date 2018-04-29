@@ -28,4 +28,5 @@ IF "%1"=="pro" (
     echo "Production Build"
     rsrc -manifest "main.manifest" -ico "img/icon.ico" -o "rsrc.syso"
     go build -i -ldflags="-H windowsgui" -o release/%BINARY%.exe
+    7z a .\release\%BINARY%.zip .\release\*
 )

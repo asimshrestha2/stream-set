@@ -30,18 +30,19 @@ var app = new Vue({
             }
         },
         addAlt: function () {
-            if (this.games[this.edit.index].alternativeName) {
-                this.games[this.edit.index].alternativeName.push(this.edit.input);
-            } else {
-                this.games[this.edit.index].alternativeName = [this.edit.input];
+            if(this.edit.input != ""){
+                if (this.games[this.edit.index].alternativeName) {
+                    this.games[this.edit.index].alternativeName.push(this.edit.input);
+                } else {
+                    this.games[this.edit.index].alternativeName = [this.edit.input];
+                }
+                this.edit.input = ""
             }
-            this.edit.input = ""
         },
         removeAlt: function (index) {
             this.games[this.edit.index].alternativeName.splice(index, 1);
         },
         updateGame: function () {
-            console.log(this.games[this.edit.index])
             let url = "http://localhost:8000/gamelist"
             fetch(url, {
                     body: JSON.stringify(this.games[this.edit.index]), // must match 'Content-Type' header
