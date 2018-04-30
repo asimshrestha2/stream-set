@@ -167,7 +167,7 @@ func GetWindows() {
 
 				lastGameProcess, _ := ps.FindProcess(currentGame.pid)
 
-				if lastTitle != text {
+				if lastTitle != text && text != "" {
 					lastTitle = text
 
 					if twitch.GameDB == nil {
@@ -200,6 +200,11 @@ func GetWindows() {
 						}
 					}
 
+					if helper.ContainsText(IgnoreList, trimedText) > -1 ||
+						(gameIndex > -1 && helper.ContainsText(IgnoreList, twitch.GameDB[gameIndex].TwitchName) > -1) {
+						continue
+					}
+
 					if twitch.Token != "" && currentGame.name != trimedText && lastGameProcess == nil &&
 						currentGame.pid != currentPID && gameIndex > -1 {
 						gameChange = time.Now()
@@ -210,8 +215,7 @@ func GetWindows() {
 
 						log.Println("GameDB: ", twitch.GameDB[gameIndex])
 
-						if helper.ContainsText(IgnoreList, trimedText) <= -1 &&
-							twitch.UserChannel.Game != twitch.GameDB[gameIndex].TwitchName {
+						if twitch.UserChannel.Game != twitch.GameDB[gameIndex].TwitchName {
 							fmt.Println("Game Updated To: " + twitch.GameDB[gameIndex].TwitchName)
 							twitch.UpdateChannelGame(twitch.GameDB[gameIndex].TwitchName)
 						}
